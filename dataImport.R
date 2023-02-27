@@ -31,17 +31,16 @@ countAddress <- table(newPlacementData$address)
 barplot(countAddress, xlab = "Address", ylab = "Count", ylim = c(0, 5000), main = "Address Distribution", col = c("#CB997E", "#6B705C"))
 
 # Scatter Chart
-df <- subset(newPlacementData, select = c("etest_p", "mba_p", "specialisation"))
+filteredSSC <- subset(placementData, select = c("ssc_p", "status"))
 
-df$etest_p <- as.numeric(df$etest_p)
-df$mba_p <- as.numeric(df$mba_p)
-
-ggplot(data = df, aes(x = etest_p, y = mba_p)) + 
-  geom_point(aes(shape = specialisation, color = specialisation)) +
-  geom_smooth(method = "lm", se = FALSE) +
-  scale_shape_manual(values=c(3, 16)) +
-  scale_color_manual(values=c('#999999','#E69F00')) +
-  theme(legend.position="top")
+ggplot(data = filteredSSC, aes(x = ssc_p, y = status)) + 
+  geom_point(aes(shape = status, color = status)) + 
+  geom_smooth(method = "lm", se = FALSE) + 
+  labs(x = "Secondary School Grade", y = "Job Placement") + 
+  scale_shape_manual(values = c(1, 16)) +
+  scale_color_manual(values = c("red", "green")) + 
+  theme(legend.position = "bottom") + 
+  theme_minimal()
 
 # Line Chart
 countAge <- table(newPlacementData$age)

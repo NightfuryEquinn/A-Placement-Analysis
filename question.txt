@@ -1,0 +1,47 @@
+Question 1 - What will affect students to get a placement?
+- Secondary school grade
+- Higher secondary school grade
+- Degree grade
+- Master grade
+- Working experience
+- Employment test
+- Age
+- Family Support
+- Paid class
+- Curricular activities
+- Internet Access
+
+Question 2 - What will affect students to get grades higher than 80 marks in secondary school and higher secondary school?
+- Mother education
+- Father education
+- Mother current job
+- Father current job
+- Family Support
+- Paid class
+- Curricular activities
+- Internet Access
+- Secondary eduboard
+- Higher secondary eduboard
+
+Question 3 - What will affect students to have paid classes?
+- Mother education
+- Father education
+- Mother current job
+- Father current job
+- Family support
+- Internet access
+- Address
+- Curricular activities
+
+Question 4 - What will affect students' salary?
+- Secondary eduboard
+- Secondary grade
+- Higher secondary eduboard
+- Higher secondary eduboard
+- Higher secondary specialisation
+- Degree grade
+- Degree specialisation
+- Master grade
+- Work experiences
+- Employment test
+- Employment specialisation

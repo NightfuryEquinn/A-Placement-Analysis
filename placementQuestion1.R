@@ -160,7 +160,7 @@ ggplot(etest_data_for_placement_status, aes(x = Status, y = Count, fill = Status
 
 # - Age
 ages <- table(placementData$age)
-# Create empty array
+# Create empty vector
 age_placed <- vector("numeric", length(ages))
 age_not_placed <- vector("numeric", length(ages))
 # Extract the age as vectors and numeric

@@ -4,12 +4,11 @@ rm(list = ls())
 
 
 # Install relevant libraries
-# install.packages(c("crayon", "dplyr", "ggplot2"))
+# install.packages(c("crayon", "dplyr", "ggplot2", "reshape2"))
 # library(crayon)
-# library(dplyr)
+library(dplyr)
 library(ggplot2)
-
-
+library(reshape2)
 
 # Read .csv file
 placementData <- read.table(
@@ -30,12 +29,12 @@ newPlacementData <- na.omit(placementData)
 ssc_p_placed <- sum(placementData$status == "Placed" & placementData$ssc_p >= 70)
 ssc_p_not_placed <- sum(placementData$status == "Not Placed" & placementData$ssc_p >= 70)
 
-data_for_placement_status <- data.frame(
+ssc_data_for_placement_status <- data.frame(
   Status = c("Placed", "Not Placed"),
   Count = c(ssc_p_placed, ssc_p_not_placed)
 )
 
-ggplot(data_for_placement_status, aes(x = Status, y = Count, fill = Status)) +
+ggplot(ssc_data_for_placement_status, aes(x = Status, y = Count, fill = Status)) +
   # Height of bars based on data values
   # Separate each bars for better reading
   geom_bar(stat = "identity", position = "dodge") +
@@ -50,12 +49,12 @@ ggplot(data_for_placement_status, aes(x = Status, y = Count, fill = Status)) +
 hsc_p_placed <- sum(placementData$status == "Placed" & placementData$hsc_p >= 70)
 hsc_p_not_placed <- sum(placementData$status == "Not Placed" & placementData$hsc_p >= 70)
 
-data_for_placement_status <- data.frame(
+hsc_data_for_placement_status <- data.frame(
   Status = c("Placed", "Not Placed"),
   Count = c(hsc_p_placed, hsc_p_not_placed)
 )
 
-ggplot(data_for_placement_status, aes(x = Status, y = Count, fill = Status)) +
+ggplot(hsc_data_for_placement_status, aes(x = Status, y = Count, fill = Status)) +
   # Height of bars based on data values
   # Separate each bars for better reading
   geom_bar(stat = "identity", position = "dodge") +
@@ -70,12 +69,12 @@ ggplot(data_for_placement_status, aes(x = Status, y = Count, fill = Status)) +
 degree_p_placed <- sum(placementData$status == "Placed" & placementData$degree_p >= 70)
 degree_p_not_placed <- sum(placementData$status == "Not Placed" & placementData$degree_p >= 70)
 
-data_for_placement_status <- data.frame(
+degree_data_for_placement_status <- data.frame(
   Status = c("Placed", "Not Placed"),
   Count = c(degree_p_placed, degree_p_not_placed)
 )
 
-ggplot(data_for_placement_status, aes(x = Status, y = Count, fill = Status)) +
+ggplot(degree_data_for_placement_status, aes(x = Status, y = Count, fill = Status)) +
   # Height of bars based on data values
   # Separate each bars for better reading
   geom_bar(stat = "identity", position = "dodge") +
@@ -90,12 +89,12 @@ ggplot(data_for_placement_status, aes(x = Status, y = Count, fill = Status)) +
 mba_p_placed <- sum(placementData$status == "Placed" & placementData$mba_p >= 70)
 mba_p_not_placed <- sum(placementData$status == "Not Placed" & placementData$mba_p >= 70)
 
-data_for_placement_status <- data.frame(
+mba_data_for_placement_status <- data.frame(
   Status = c("Placed", "Not Placed"),
   Count = c(mba_p_placed, mba_p_not_placed)
 )
 
-ggplot(data_for_placement_status, aes(x = Status, y = Count, fill = Status)) +
+ggplot(mba_data_for_placement_status, aes(x = Status, y = Count, fill = Status)) +
   # Height of bars based on data values
   # Separate each bars for better reading
   geom_bar(stat = "identity", position = "dodge") +
@@ -112,7 +111,7 @@ workex_not_placed_yes <- sum(placementData$status == "Not Placed" & placementDat
 workex_placed_no <- sum(placementData$status == "Placed" & placementData$workex == "No")
 workex_not_placed_no <- sum(placementData$status == "Not Placed" & placementData$workex == "No")
 
-data_for_placement_status <- data.frame(
+workex_data_for_placement_status <- data.frame(
   Status = c(
     "Placed with Working Experience", 
     "Not Placed with Working Experience", 
@@ -126,14 +125,14 @@ data_for_placement_status <- data.frame(
     workex_not_placed_no)
   )
 
-ggplot(data_for_placement_status, aes(x = Status, y = Count, fill = Status)) +
+ggplot(workex_data_for_placement_status, aes(x = Status, y = Count, fill = Status)) +
   # Height of bars based on data values
   # Separate each bars for better reading
   geom_bar(stat = "identity", position = "dodge") +
   xlab("Placement Status") +
   ylab("Count") +
   ggtitle("Students' Placement to Students' Working Experience") +
-  scale_fill_manual(values = c("#DB2B39", "#29335C", "#F3A712", "#534D41")) +
+  scale_fill_manual(values = c("#7B904B", "#58641D", "#273B09", "#002400")) +
   # Rotate x-axis label, align to the right
   theme(axis.text.x = element_text(angle = -45, hjust = 0))
 
@@ -143,12 +142,12 @@ ggplot(data_for_placement_status, aes(x = Status, y = Count, fill = Status)) +
 etest_p_placed <- sum(placementData$status == "Placed" & placementData$etest_p >= 80)
 etest_p_not_placed <- sum(placementData$status == "Not Placed" & placementData$etest_p >= 80)
 
-data_for_placement_status <- data.frame(
+etest_data_for_placement_status <- data.frame(
   Status = c("Placed", "Not Placed"),
   Count = c(etest_p_placed, etest_p_not_placed)
 )
 
-ggplot(data_for_placement_status, aes(x = Status, y = Count, fill = Status)) +
+ggplot(etest_data_for_placement_status, aes(x = Status, y = Count, fill = Status)) +
   # Height of bars based on data values
   # Separate each bars for better reading
   geom_bar(stat = "identity", position = "dodge") +
@@ -160,16 +159,136 @@ ggplot(data_for_placement_status, aes(x = Status, y = Count, fill = Status)) +
 
 
 # - Age
+ages <- table(placementData$age)
+# Create empty array
+age_placed <- vector("numeric", length(ages))
+age_not_placed <- vector("numeric", length(ages))
+# Extract the age as vectors and numeric
+age_vec <- as.vector(names(ages))
+age_num <- as.numeric(names(ages))
+
+for(i in 1:length(age_num)) {
+  age <- age_num[i]
+  
+  count_age_placed <- sum(placementData$age == age & placementData$status == "Placed")
+  count_age_not_placed <- sum(placementData$age == age & placementData$status == "Not Placed")
+  
+  age_placed[i] <- count_age_placed
+  age_not_placed[i] <-count_age_not_placed
+}
+
+age_data_for_placement_status <- data.frame(
+  Age_Group = age_vec,
+  Placed = age_placed,
+  Not_Placed = age_not_placed
+)
+
+age_data_for_placement_status_long <- melt(
+  age_data_for_placement_status,
+  id.vars = "Age_Group",
+  variable.name = "Placement_Status", 
+  value.name = "Count"
+  )
+
+ggplot(
+  age_data_for_placement_status_long, 
+  aes(
+    x = factor(Age_Group), 
+    y = Count, 
+    fill = Placement_Status
+    )) +
+  geom_bar(position = "dodge", stat = "identity") +
+  labs(x = "Age", y = "Count", fill = "") +
+  ggtitle("Students' Placement to Students' Age") +
+  scale_fill_manual(values = c("#BB4430", "#7EBDC2"))
+
 
 
 # - Family Support
+famsup_data_for_placement_status <- placementData %>%
+  # Group data frame by status and family support
+  group_by(status, famsup) %>%
+  # Summarises grouped data count
+  summarise(Count = n()) %>%
+  # Removes grouping info from data frame
+  ungroup() %>%
+  # Add a new column to the data frame called Status based on values of Status and Family Support
+  # If yes, then Placed or Not Placed with Family Support
+  # If no, then Placed or Not Placed without Family Support
+  mutate(Status = ifelse(famsup == "yes", paste0(status, " with Family Support"), paste0(status, " without Family Support"))) %>%
+  # Select both columns from data frame
+  select(Status, Count)
+
+ggplot(famsup_data_for_placement_status, aes(x = Status, y = Count, fill = Status)) +
+  # Height of bars based on data values
+  # Separate each bars for better reading
+  geom_bar(stat = "identity", position = "dodge") +
+  xlab("Family Support") +
+  ylab("Count") +
+  ggtitle("Students' Placement to Family Support") +
+  scale_fill_manual(values = c("#B5B682", "#7C9885", "#28666E", "#033F63")) +
+  # Rotate x-axis label, align to the right
+  theme(axis.text.x = element_text(angle = -45, hjust = 0))
+
 
 
 # - Paid class
+paid_data_for_placement_status <- placementData %>%
+  group_by(status, paid) %>%
+  summarise(Count = n()) %>%
+  ungroup() %>%
+  mutate(Status = ifelse(paid == "yes", paste0(status, " with Paid Class"), paste0(status, " without Paid Class"))) %>%
+  select(Status, Count)
+
+ggplot(paid_data_for_placement_status, aes(x = Status, y = Count, fill = Status)) +
+  # Height of bars based on data values
+  # Separate each bars for better reading
+  geom_bar(stat = "identity", position = "dodge") +
+  xlab("Paid Class") +
+  ylab("Count") +
+  ggtitle("Students' Placement to Paid Class") +
+  scale_fill_manual(values = c("#A9927D", "#5E503F", "#22333B", "#0A0908")) +
+  # Rotate x-axis label, align to the right
+  theme(axis.text.x = element_text(angle = -45, hjust = 0))
+
 
 
 # - Curricular activities
+activities_data_for_placement_status <- placementData %>%
+  group_by(status, activities) %>%
+  summarise(Count = n()) %>%
+  ungroup() %>%
+  mutate(Status = ifelse(activities == "yes", paste0(status, " with Curricular Activities"), paste0(status, " without Curricular Activities"))) %>%
+  select(Status, Count)
+
+ggplot(activities_data_for_placement_status, aes(x = Status, y = Count, fill = Status)) +
+  # Height of bars based on data values
+  # Separate each bars for better reading
+  geom_bar(stat = "identity", position = "dodge") +
+  xlab("Curricular Activities") +
+  ylab("Count") +
+  ggtitle("Students' Placement to Curricular Activities") +
+  scale_fill_manual(values = c("#4CC9F0", "#4361EE", "#7209B7", "#3A0CA3")) +
+  # Rotate x-axis label, align to the right
+  theme(axis.text.x = element_text(angle = -45, hjust = 0))
+
 
 
 # - Internet Access
+internet_data_for_placement_status <- placementData %>%
+  group_by(status, internet) %>%
+  summarise(Count = n()) %>%
+  ungroup() %>%
+  mutate(Status = ifelse(internet == "yes", paste0(status, " with Internet Access"), paste0(status, " without Internet Access"))) %>%
+  select(Status, Count)
 
+ggplot(internet_data_for_placement_status, aes(x = Status, y = Count, fill = Status)) +
+  # Height of bars based on data values
+  # Separate each bars for better reading
+  geom_bar(stat = "identity", position = "dodge") +
+  xlab("Internet Access") +
+  ylab("Count") +
+  ggtitle("Students' Placement to Internet Access") +
+  scale_fill_manual(values = c("#E6AF2E", "#A3320B", "#6B0504", "#001514")) +
+  # Rotate x-axis label, align to the right
+  theme(axis.text.x = element_text(angle = -45, hjust = 0))

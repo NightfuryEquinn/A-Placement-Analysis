@@ -211,16 +211,136 @@ ggplot(momjob_pass70hsc_data, aes(x = "", y = Count, fill = Father_Current_Job))
 
 
 # - Family Support
+famsup_yes_pass70ssc <- sum(placementData$famsup == "yes" & placementData$ssc_p >= 70)
+famsup_no_pass70ssc <- sum(placementData$famsup == "no" & placementData$ssc_p >= 70)
 
+famsup_yes_pass70hsc <- sum(placementData$famsup == "yes" & placementData$hsc_p >= 70)
+famsup_no_pass70hsc <- sum(placementData$famsup == "no" & placementData$hsc_p >= 70)
 
+famsup_pass70ssc <- data.frame(
+  Status <- c("Family Support", "Without Family Support"),
+  Count <- c(famsup_yes_pass70ssc, famsup_no_pass70ssc)
+)
+
+ggplot(famsup_pass70ssc, aes(x = "", y = Count, fill = Status)) +
+  geom_col(width = 1) +
+  coord_polar("y", start = 0) +
+  labs(fill = "Count", title = "Students' Secondary School Grade Percentage to Students' Family Support") +
+  geom_text(aes(label = Count), position = position_stack(vjust = 0.5)) +
+  scale_fill_manual(values = c("#A873E8", "#5D7BD5"))
+
+famsup_pass70hsc <- data.frame(
+  Status <- c("Family Support", "Without Family Support"),
+  Count <- c(famsup_yes_pass70hsc, famsup_no_pass70hsc)
+)
+
+ggplot(famsup_pass70hsc, aes(x = "", y = Count, fill = Status)) +
+  geom_col(width = 1) +
+  coord_polar("y", start = 0) +
+  labs(fill = "Count", title = "Students' Higher Secondary School Grade Percentage to Students' Family Support") +
+  geom_text(aes(label = Count), position = position_stack(vjust = 0.5)) +
+  scale_fill_manual(values = c("#A873E8", "#5D7BD5"))
 
 
 
 # - Paid class
+paid_yes_pass70ssc <- sum(placementData$paid == "yes" & placementData$ssc_p >= 70)
+paid_no_pass70ssc <- sum(placementData$paid == "no" & placementData$ssc_p >= 70)
+
+paid_yes_pass70hsc <- sum(placementData$paid == "yes" & placementData$hsc_p >= 70)
+paid_no_pass70hsc <- sum(placementData$paid == "no" & placementData$hsc_p >= 70)
+
+paid_pass70ssc <- data.frame(
+  Status <- c("Paid Classes", "Without Paid Classes"),
+  Count <- c(paid_yes_pass70ssc, paid_no_pass70ssc)
+)
+
+ggplot(paid_pass70ssc, aes(x = "", y = Count, fill = Status)) +
+  geom_col(width = 1) +
+  coord_polar("y", start = 0) +
+  labs(fill = "Count", title = "Students' Secondary School Grade Percentage to Students' Paid Classes") +
+  geom_text(aes(label = Count), position = position_stack(vjust = 0.5)) +
+  scale_fill_manual(values = c("#FFBA49", "#20A39E"))
+
+paid_pass70hsc <- data.frame(
+  Status <- c("Paid Classes", "Without Paid Classes"),
+  Count <- c(paid_yes_pass70hsc, paid_no_pass70hsc)
+)
+
+ggplot(paid_pass70hsc, aes(x = "", y = Count, fill = Status)) +
+  geom_col(width = 1) +
+  coord_polar("y", start = 0) +
+  labs(fill = "Count", title = "Students' Higher Secondary School Grade Percentage to Students' Paid Classes") +
+  geom_text(aes(label = Count), position = position_stack(vjust = 0.5)) +
+  scale_fill_manual(values = c("#FFBA49", "#20A39E"))
+
+
 
 # - Curricular activities
+activities_yes_pass70ssc <- sum(placementData$activities == "yes" & placementData$ssc_p >= 70)
+activities_no_pass70ssc <- sum(placementData$activities == "no" & placementData$ssc_p >= 70)
+
+activities_yes_pass70hsc <- sum(placementData$activities == "yes" & placementData$hsc_p >= 70)
+activities_no_pass70hsc <- sum(placementData$activities == "no" & placementData$hsc_p >= 70)
+
+activities_pass70ssc <- data.frame(
+  Status <- c("Curricular Activities", "Without Curricular Activities"),
+  Count <- c(activities_yes_pass70ssc, activities_no_pass70ssc)
+)
+
+ggplot(activities_pass70ssc, aes(x = "", y = Count, fill = Status)) +
+  geom_col(width = 1) +
+  coord_polar("y", start = 0) +
+  labs(fill = "Count", title = "Students' Secondary School Grade Percentage to Students' Curricular Activites") +
+  geom_text(aes(label = Count), position = position_stack(vjust = 0.5)) +
+  scale_fill_manual(values = c("#09814A", "#E5C687"))
+
+activities_pass70hsc <- data.frame(
+  Status <- c("Curricular Activities", "Without Curricular Activites"),
+  Count <- c(activities_yes_pass70hsc, activities_no_pass70hsc)
+)
+
+ggplot(activities_pass70hsc, aes(x = "", y = Count, fill = Status)) +
+  geom_col(width = 1) +
+  coord_polar("y", start = 0) +
+  labs(fill = "Count", title = "Students' Higher Secondary School Grade Percentage to Students' Curricular Activities") +
+  geom_text(aes(label = Count), position = position_stack(vjust = 0.5)) +
+  scale_fill_manual(values = c("#09814A", "#E5C687"))
+
+
 
 # - Internet Access
+internet_yes_pass70ssc <- sum(placementData$internet == "yes" & placementData$ssc_p >= 70)
+internet_no_pass70ssc <- sum(placementData$internet == "no" & placementData$ssc_p >= 70)
+
+internet_yes_pass70hsc <- sum(placementData$internet == "yes" & placementData$hsc_p >= 70)
+internet_no_pass70hsc <- sum(placementData$internet == "no" & placementData$hsc_p >= 70)
+
+internet_pass70ssc <- data.frame(
+  Status <- c("Internet Access", "Without Internet Access"),
+  Count <- c(internet_yes_pass70ssc, internet_no_pass70ssc)
+)
+
+ggplot(internet_pass70ssc, aes(x = "", y = Count, fill = Status)) +
+  geom_col(width = 1) +
+  coord_polar("y", start = 0) +
+  labs(fill = "Count", title = "Students' Secondary School Grade Percentage to Students' Internet Access") +
+  geom_text(aes(label = Count), position = position_stack(vjust = 0.5)) +
+  scale_fill_manual(values = c("#EABE7C", "#DD6031"))
+
+internet_pass70hsc <- data.frame(
+  Status <- c("Curricular Activities", "Without Curricular Activites"),
+  Count <- c(internet_yes_pass70hsc, internet_no_pass70hsc)
+)
+
+ggplot(internet_pass70hsc, aes(x = "", y = Count, fill = Status)) +
+  geom_col(width = 1) +
+  coord_polar("y", start = 0) +
+  labs(fill = "Count", title = "Students' Higher Secondary School Grade Percentage to Students' Internet Access") +
+  geom_text(aes(label = Count), position = position_stack(vjust = 0.5)) +
+  scale_fill_manual(values = c("#EABE7C", "#DD6031"))
+
+
 
 # - Secondary education board
 secondEduBoard <- table(placementData$ssc_b)
@@ -292,7 +412,7 @@ ggplot(higherSecondEduBoard_pass70ssc_data, aes(x = "", y = Count, fill = Higher
   coord_polar("y", start = 0) +
   labs(fill = "Count", title = "Students' Secondary School Grade Percentage to Students' Higher Secondary Education Board") +
   geom_text(aes(label = Count), position = position_stack(vjust = 0.5)) +
-  scale_fill_manual(values = c("#E6AF2E", "#BEB7A4", "#3D348D"))
+  scale_fill_manual(values = c("#6A9588", "#7CA982", "#C2A83E"))
 
 higherSecondEduBoard_pass70hsc_data <- data.frame(
   Higher_Secondary_Education_Board <- higherSecondEduBoardName,
@@ -304,4 +424,4 @@ ggplot(higherSecondEduBoard_pass70hsc_data, aes(x = "", y = Count, fill = Higher
   coord_polar("y", start = 0) +
   labs(fill = "Count", title = "Students' Higher Secondary School Grade Percentage to Students' Higher Secondary Education Board") +
   geom_text(aes(label = Count), position = position_stack(vjust = 0.5)) +
-  scale_fill_manual(values = c("#E6AF2E", "#BEB7A4", "#3D348D"))
+  scale_fill_manual(values = c("#6A9588", "#7CA982", "#C2A83E"))

@@ -2,10 +2,12 @@
 rm(list = ls())
 
 # Install relevant libraries
-# install.packages(c("crayon", "dplyr", "ggplot2"))
+# install.packages(c("crayon", "dplyr", "ggplot2", "reshape2", "stringr"))
 # library(crayon)
 # library(dplyr)
 library(ggplot2)
+# library(reshape2)
+# library(stringr)
 
 # Import the .csv file (Data Import)
 placementData <- read.table(

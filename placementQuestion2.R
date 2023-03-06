@@ -1,5 +1,7 @@
 # Clean environment to ensure data are updated
 rm(list = ls())
+# Clean plot graphs
+if(!is.null(dev.list())) dev.off()
 
 
 

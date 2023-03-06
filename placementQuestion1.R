@@ -1,5 +1,7 @@
 # Clean environment to ensure data are updated
 rm(list = ls())
+# Clean plot graphs
+if(!is.null(dev.list())) dev.off()
 
 
 
@@ -8,7 +10,7 @@ rm(list = ls())
 # library(crayon)
 # library(dplyr)
 library(ggplot2)
-# library(reshape2)
+library(reshape2)
 # library(stringr)
 
 # Read .csv file

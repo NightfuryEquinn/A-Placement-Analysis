@@ -11,7 +11,7 @@ if(!is.null(dev.list())) dev.off()
 library(dplyr)
 library(ggplot2)
 # library(reshape2)
-library(stringr)
+# library(stringr)
 
 
 
@@ -29,29 +29,29 @@ newPlacementData <- na.omit(placementData)
 
 
 
-# Question 3 - What will affect students to have paid classes?
-educationLevel <- c(
-  "No education",
-  "Primary education",
-  "Secondary education",
-  "Degree Level",
-  "Post Graduate"
-)
+placementData[is.na(placementData)] <- 0
 
 
 
-# - Mother education
+# Question 4 - What will affect students' salary?
+# - Secondary education board
 
-# - Father education
+# - Secondary grade
 
-# - Mother current job
+# - Higher secondary education board
 
-# - Father current job
+# - Higher secondary grade
 
-# - Family support
+# - Higher secondary specialization
 
-# - Internet access
+# - Degree grade
 
-# - Address
+# - Degree specialization
 
-# - Curricular activities
+# - Master grade
+
+# - Work experiences
+
+# - Employment test
+
+# - Employment specialization

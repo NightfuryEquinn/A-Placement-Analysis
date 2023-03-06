@@ -37,7 +37,7 @@ Question 4 - What will affect students' salary?
 - Secondary eduboard
 - Secondary grade
 - Higher secondary eduboard
-- Higher secondary eduboard
+- Higher secondary grade
 - Higher secondary specialisation
 - Degree grade
 - Degree specialisation

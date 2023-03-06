@@ -7,42 +7,43 @@ rm(list = ls())
 # library(dplyr)
 library(ggplot2)
 
-# Import the .csv file
+# Import the .csv file (Data Import)
 placementData <- read.table(
   "C:/Users/User/Documents - Local/Degree/Sem 1/PFDA/Assignment/Assignment RScripts/placement_data.csv", 
   header = TRUE, 
   sep = ","
 )
 
-# Remove data without salary
+# Remove data without salary (Data Cleaning)
 newPlacementData <- na.omit(placementData)
 
-# Get summary of the .csv file
+# Check for duplicated rows (Data Cleaning)
+duplicated_rows <- duplicated(placementData)
+
+# Print the number of duplicated rows (Data Cleaning)
+cat("Number of duplicated rows:", sum(duplicated_rows), "\n")
+
+# Remove duplicated rows (Data Cleaning)
+noRedData <- placementData[!duplicated_rows, ]
+
+# Change NA values to 0 (Data Cleaning)
+placementData[is.na(placementData)] <- 0
+
+# Change the name of headers (Data pre-processing / transformation)
+alteredHeaderNames <- c(
+  "UID", "Gender", "Age", "Address", "Mother_Education", "Father_Education",
+  "Mother_Current_Job", "Father_Current_Job", "Family_Support", "Paid Classes",
+  "Curricular_Activities", "Internet_Usage", "Secondary_Grade_Percentage",
+  "Secondary_Education_Board", "Higher_Secondary_Grade_Percentage",
+  "Higher_Secondary_Education_Board", "Higher_Secondary_Specialism",
+  "Degree_Grade_Percentage", "Degree_Specialism", "Working_Experience",
+  "Employment_Test", "Working_Specialism", "Master_Grade_Percentage",
+  "Placement_Status", "Salary"
+)
+
+names(placementData) <- alteredHeaderNames
+names(newPlacementData) <- alteredHeaderNames
+
+# Get summary of the filtered .csv file (Data summarisation)
+summary(placementData)
 summary(newPlacementData)
-
-# Pie Chart
-countGender <- table(newPlacementData$gender)
-
-pie(countGender, labels = c("Female", "Male"), col = c("#ED0101", "#0C44AC"))
-
-# Bar Chart
-countAddress <- table(newPlacementData$address)
-
-barplot(countAddress, xlab = "Address", ylab = "Count", ylim = c(0, 5000), main = "Address Distribution", col = c("#CB997E", "#6B705C"))
-
-# Scatter Chart
-filteredSSC <- subset(placementData, select = c("ssc_p", "status"))
-
-ggplot(data = filteredSSC, aes(x = ssc_p, y = status)) + 
-  geom_point(aes(shape = status, color = status)) + 
-  geom_smooth(method = "lm", se = FALSE) + 
-  labs(x = "Secondary School Grade", y = "Job Placement") + 
-  scale_shape_manual(values = c(1, 16)) +
-  scale_color_manual(values = c("red", "green")) + 
-  theme(legend.position = "bottom") + 
-  theme_minimal()
-
-# Line Chart
-countAge <- table(newPlacementData$age)
-
-plot(countAge, type = "o", main = "Age Distribution", xlab = "Age", ylab = "Count", col = "blue")

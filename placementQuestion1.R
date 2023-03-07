@@ -8,7 +8,7 @@ if(!is.null(dev.list())) dev.off()
 # Install relevant libraries
 # install.packages(c("crayon", "dplyr", "ggplot2", "reshape2", "stringr"))
 # library(crayon)
-# library(dplyr)
+library(dplyr)
 library(ggplot2)
 library(reshape2)
 # library(stringr)

@@ -16,6 +16,10 @@ placementData <- read.table(
   sep = ","
 )
 
+# Replace R to Rural, U to Urban (Data Manipulation)
+placementData$address <- gsub("R", "Rural", placementData$address)
+placementData$address <- gsub("U", "Urban", placementData$address)
+
 # Remove data without salary (Data Cleaning)
 newPlacementData <- na.omit(placementData)
 
@@ -45,10 +49,6 @@ alteredHeaderNames <- c(
 
 names(placementData) <- alteredHeaderNames
 names(newPlacementData) <- alteredHeaderNames
-
-# Replace R to Rural, U to Urban (Data Manipulation)
-placementData$address <- gsub("R", "Rural", placementData$address)
-placementData$address <- gsub("U", "Urban", placementData$address)
 
 # Get summary of the filtered .csv file (Data summarisation)
 summary(placementData)

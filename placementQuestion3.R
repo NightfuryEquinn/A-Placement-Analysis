@@ -40,18 +40,11 @@ educationLevel <- c(
 
 
 
-# - Mother education
-
-# - Father education
-
-# - Mother current job
-
-# - Father current job
-
-# - Family support
-
-# - Internet access
-
-# - Address
-
-# - Curricular activities
+# - Mother education (F.Polygon)
+# - Father education (F.Polygon)
+# - Mother current job (F.Polygon)
+# - Father current job (F.Polygon)
+# - Family support (Histogram)
+# - Internet access (Histogram)
+# - Address (Histogram) 
+# - Curricular activities (Histogram)

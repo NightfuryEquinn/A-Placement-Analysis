@@ -1,4 +1,4 @@
-Question 1 - What will affect students to get a placement?
+Question 1 - What will affect students to get a placement? (Bar Chart)
 - Secondary school grade
 - Higher secondary school grade
 - Degree grade
@@ -11,7 +11,7 @@ Question 1 - What will affect students to get a placement?
 - Curricular activities
 - Internet Access
 
-Question 2 - What will affect students to get grades higher than 70 marks in secondary school and higher secondary school?
+Question 2 - What will affect students to get grades higher than 70 marks in secondary school and higher secondary school? (Pie Chart)
 - Mother education
 - Father education
 - Mother current job
@@ -24,24 +24,24 @@ Question 2 - What will affect students to get grades higher than 70 marks in sec
 - Higher secondary eduboard
 
 Question 3 - What will affect students to have paid classes?
-- Mother education
-- Father education
-- Mother current job
-- Father current job
-- Family support
-- Internet access
-- Address
-- Curricular activities
+- Mother education (Boxplot)
+- Father education (Boxplot)
+- Mother current job (Boxplot)
+- Father current job (Boxplot)
+- Family support (Histogram)
+- Internet access (Histogram)
+- Address (Histogram) 
+- Curricular activities (Histogram)
 
 Question 4 - What will affect students' salary?
-- Secondary eduboard
-- Secondary grade
-- Higher secondary eduboard
-- Higher secondary grade
-- Higher secondary specialisation
-- Degree grade
-- Degree specialisation
-- Master grade
-- Work experiences
-- Employment test
-- Employment specialisation
+- Secondary eduboard (Frequency Polygon)
+- Secondary grade (Density Plot)
+- Higher secondary eduboard (Frequency Polygon)
+- Higher secondary grade (Density Plot)
+- Higher secondary specialisation (Countplot)
+- Degree grade (Density Plot)
+- Degree specialisation (Countplot)
+- Master grade (Scatterplot)
+- Work experiences (Violin Plot)
+- Employment test (Scatterplot)
+- Employment specialisation (Countplot)

@@ -97,6 +97,7 @@ ggplot(df_higher_secondary, aes(x = higher_secondary_x, y = higher_secondary_y))
   theme(legend.title = element_text(face = "bold", size = 12))
 
 
+
 # - Higher secondary grade (Density Plot)
 df_higher_secondary_grade <- data.frame(
   student_higher_secondary_grade = as.vector(placementData$hsc_p),
@@ -113,7 +114,28 @@ ggplot(df_higher_secondary_grade, aes(x = student_higher_secondary_grade, y = ..
     legend.position = "bottom"
   )
 
-# - Higher secondary specialisation (Countplot)
+
+
+# - Higher secondary specialisation (Violin Plot)
+df_higher_secondary_specialisation <- data.frame(
+  student_higher_secondary_specialisation = as.vector(placementData$hsc_s),
+  student_salary = as.vector(placementData$salary)
+)
+
+ggplot(df_higher_secondary_specialisation, aes(x = factor(student_higher_secondary_specialisation), y = student_salary)) +
+  geom_violin(trim = FALSE, alpha = 0.6, color = "#2374AB", linewidth = 1.2) +
+  geom_jitter(aes(color = student_higher_secondary_specialisation), width = 0.2, alpha = 0.7) +
+  scale_fill_discrete(name = "Students' Higher Secondary Specialisation") +
+  scale_color_discrete(name = "Students' Higher Secondary Specialisation") +
+  labs(x = "Students' Higher Secondary Specialisation", y = "Students' Salary", title = "Violin Plot of Students' Higher Secondary Specialisation and Salary") +
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    legend.title = element_text(size = 12, face = "bold"),
+    legend.position = "bottom"
+  )
+
+
+
 # - Degree grade (Density Plot)
 df_degree_grade <- data.frame(
   student_degree_grade = as.vector(placementData$degree_p),
@@ -131,8 +153,9 @@ ggplot(df_degree_grade, aes(x = student_degree_grade, y = ..density.., color = f
   )
 
 
-# - Degree specialisation (Countplot)
+
+# - Degree specialisation (Violin Plot)
 # - Master grade (Scatterplot)
-# - Work experiences (Violin Plot)
+# - Work experiences (Count Plot)
 # - Employment test (Scatterplot)
-# - Employment specialisation (Countplot)
+# - Employment specialisation (Violin Plot)

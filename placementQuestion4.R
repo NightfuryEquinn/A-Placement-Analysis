@@ -11,7 +11,7 @@ if(!is.null(dev.list())) dev.off()
 library(dplyr)
 library(ggplot2)
 # library(reshape2)
-# library(stringr)
+library(stringr)
 
 
 
@@ -31,42 +31,27 @@ newPlacementData <- na.omit(placementData)
 
 placementData[is.na(placementData)] <- 0
 
+for (col in c("Medu", "Fedu")) {
+  placementData[[col]][placementData[[col]] == 0] <- "No Education"
+  placementData[[col]][placementData[[col]] == 1] <- "Primary Education"
+  placementData[[col]][placementData[[col]] == 2] <- "Secondary Education"
+  placementData[[col]][placementData[[col]] == 3] <- "Degree Level"
+  placementData[[col]][placementData[[col]] == 4] <- "Post Graduate"
+}
 
 
-# Question 4 - What will affect students' salary?
-# - Secondary eduboard (Boxplot)
-secondary_edu_table <- table(placementData$ssc_b)
-secondary_edu_name <- as.vector(names(secondary_edu_table))
 
-df_secondary <- data.frame(
-  secondary_x = secondary_edu_name,
-  secondary_y = as.vector(placementData$salary)
+# Question 4 - What will affect students' master? (Density Plot)
+# - Mother education
+df_mom_edu <- data.frame(
+  student_mom_edu = as.vector(placementData$Medu),
+  student_master = as.vector(placementData$mba_p)
 )
 
-ggplot(df_secondary, aes(x = secondary_x, y = secondary_y)) +
-  geom_boxplot(fill = "#3B905A") +
-  geom_jitter(aes(color = "Salary"), width = 0.2, alpha = 0.5, size = 3) +
-  labs(
-    x = "Secondary Education Board", 
-    y = "Count", 
-    title = "Boxplot of Secondary Education Board and Students' Salary",
-    color = "Plots"
-  ) +
-  scale_color_manual(values = c("#95E06C")) +
-  theme(legend.title = element_text(face = "bold", size = 12))
-
-
-
-# - Secondary grade (Density Plot)
-df_secondary_grade <- data.frame(
-  student_secondary_grade = as.vector(placementData$ssc_p),
-  student_salary = as.vector(placementData$salary)
-)
-
-ggplot(df_secondary_grade, aes(x = student_secondary_grade, y = after_stat(density), color = factor(student_salary))) +
+ggplot(df_mom_edu, aes(x = student_master, y = after_stat(density), color = factor(student_mom_edu))) +
   geom_density(alpha = 0.6) +
-  labs(x = "Students' Secondary Grade", y = "Density", title = "Density Plot of Students' Secondary Grade and Salary") +
-  scale_color_discrete(name = "Students' Salary") +
+  labs(x = "Students' Master Grade", y = "Density", title = "Density Plot of Students' Master Grade and Mother's Education") +
+  scale_color_discrete(name = "Mother's Education") +
   theme(
     plot.title = element_text(hjust = 0.5), 
     legend.title = element_text(size = 12, face = "bold"), 
@@ -75,39 +60,16 @@ ggplot(df_secondary_grade, aes(x = student_secondary_grade, y = after_stat(densi
 
 
 
-# - Higher secondary eduboard (Boxplot)
-higher_secondary_edu_table <- table(placementData$hsc_b)
-higher_secondary_edu_name <- as.vector(names(higher_secondary_edu_table))
-
-df_higher_secondary <- data.frame(
-  higher_secondary_x = higher_secondary_edu_name,
-  higher_secondary_y = as.vector(placementData$salary)
+# - Father education
+df_dad_edu <- data.frame(
+  student_dad_edu = as.vector(placementData$Fedu),
+  student_master = as.vector(placementData$mba_p)
 )
 
-ggplot(df_higher_secondary, aes(x = higher_secondary_x, y = higher_secondary_y)) +
-  geom_boxplot(fill = "#3B905A") +
-  geom_jitter(aes(color = "Salary"), width = 0.2, alpha = 0.5, size = 3) +
-  labs(
-    x = "Higher Secondary Education Board",
-    y = "Count", 
-    title = "Boxplot of Higher Secondary Education Board and Students' Salary", 
-    color = "Plots"
-  ) +
-  scale_color_manual(values = c("#95E06C")) +
-  theme(legend.title = element_text(face = "bold", size = 12))
-
-
-
-# - Higher secondary grade (Density Plot)
-df_higher_secondary_grade <- data.frame(
-  student_higher_secondary_grade = as.vector(placementData$hsc_p),
-  student_salary = as.vector(placementData$salary)
-)
-
-ggplot(df_higher_secondary_grade, aes(x = student_higher_secondary_grade, y = after_stat(density), color = factor(student_salary))) +
+ggplot(df_dad_edu, aes(x = student_master, y = after_stat(density), color = factor(student_dad_edu))) +
   geom_density(alpha = 0.6) +
-  labs(x = "Students' Higher Secondary Grade", y = "Density", title = "Density Plot of Students' Higher Secondary Grade and Salary") +
-  scale_color_discrete(name = "Students' Salary") +
+  labs(x = "Students' Master Grade", y = "Density", title = "Density Plot of Students' Master Grade and Father's Education") +
+  scale_color_discrete(name = "Father's Education") +
   theme(
     plot.title = element_text(hjust = 0.5), 
     legend.title = element_text(size = 12, face = "bold"), 
@@ -116,40 +78,16 @@ ggplot(df_higher_secondary_grade, aes(x = student_higher_secondary_grade, y = af
 
 
 
-# - Higher secondary specialisation (Violin Plot)
-df_higher_secondary_specialisation <- data.frame(
-  student_higher_secondary_specialisation = as.vector(placementData$hsc_s),
-  student_salary = as.vector(placementData$salary)
+# - Mother current job
+df_mom_job <- data.frame(
+  student_mom_job = as.vector(placementData$Mjob),
+  student_master = as.vector(placementData$mba_p)
 )
 
-ggplot(df_higher_secondary_specialisation, aes(x = factor(student_higher_secondary_specialisation), y = student_salary)) +
-  geom_violin(trim = FALSE, alpha = 0.6, color = "#110B11", linewidth = 1.2) +
-  geom_jitter(aes(color = student_higher_secondary_specialisation), width = 0.2, alpha = 0.7) +
-  labs(
-    x = "Students' Higher Secondary Specialisation", 
-    y = "Students' Salary", 
-    title = "Violin Plot of Students' Higher Secondary Specialisation and Salary",
-    color = "Higher Secondary Specialisation"
-  ) +
-  scale_color_manual(values = c("#B7990D", "#8CADA7", "#A5D0A8")) +
-  theme(
-    plot.title = element_text(hjust = 0.5),
-    legend.title = element_text(size = 12, face = "bold"),
-    legend.position = "bottom"
-  )
-
-
-
-# - Degree grade (Density Plot)
-df_degree_grade <- data.frame(
-  student_degree_grade = as.vector(placementData$degree_p),
-  student_salary = as.vector(placementData$salary)
-)
-
-ggplot(df_degree_grade, aes(x = student_degree_grade, y = after_stat(density), color = factor(student_salary))) +
+ggplot(df_mom_job, aes(x = student_master, y = after_stat(density), color = stringr::str_to_title(factor(student_mom_job)))) +
   geom_density(alpha = 0.6) +
-  labs(x = "Students' Degree Grade", y = "Density", title = "Density Plot of Students' Degree and Salary") +
-  scale_color_discrete(name = "Students' Salary") +
+  labs(x = "Students' Master Grade", y = "Density", title = "Density Plot of Students' Master Grade and Mother's Current Job") +
+  scale_color_discrete(name = "Mother's Current Job") +
   theme(
     plot.title = element_text(hjust = 0.5), 
     legend.title = element_text(size = 12, face = "bold"), 
@@ -158,106 +96,126 @@ ggplot(df_degree_grade, aes(x = student_degree_grade, y = after_stat(density), c
 
 
 
-# - Degree specialisation (Violin Plot)
-df_degree_specialisation <- data.frame(
-  student_degree_specialisation = as.vector(placementData$degree_t),
-  student_salary = as.vector(placementData$salary)
+# - Father current job
+df_dad_job <- data.frame(
+  student_dad_job = as.vector(placementData$Fjob),
+  student_master = as.vector(placementData$mba_p)
 )
 
-ggplot(df_degree_specialisation, aes(x = factor(student_degree_specialisation), y = student_salary)) +
-  geom_violin(trim = FALSE, alpha = 0.6, color = "#F1BF98", linewidth = 1.2) +
-  geom_jitter(aes(color = student_degree_specialisation), width = 0.2, alpha = 0.7) +
-  labs(
-    x = "Students' Degree Specialisation", 
-    y = "Students' Salary", 
-    title = "Violin Plot of Students' Degree Specialisation and Salary",
-    color = "Degree Specialisation"
-  ) +
-  scale_color_manual(values = c("#6B818C", "#CC2936", "#08415C")) +
+ggplot(df_dad_job, aes(x = student_master, y = after_stat(density), color = stringr::str_to_title(factor(student_dad_job)))) +
+  geom_density(alpha = 0.6) +
+  labs(x = "Students' Master Grade", y = "Density", title = "Density Plot of Students' Master Grade and Father's Current Job") +
+  scale_color_discrete(name = "Father's Current Job") +
   theme(
-    plot.title = element_text(hjust = 0.5),
-    legend.title = element_text(size = 12, face = "bold"),
+    plot.title = element_text(hjust = 0.5), 
+    legend.title = element_text(size = 12, face = "bold"), 
     legend.position = "bottom"
   )
 
 
 
-# - Master grade (Scatterplot)
-df_master <- data.frame(
-  student_mba = c(placementData$mba_p),
-  student_salary = c(placementData$salary),
-  # Create a categorical variable based on the salary
-  salary_category = cut(placementData$salary, breaks = c(0, 300000, Inf), labels = c("Category A", "Category B"))
+# - Family Support
+df_famsup <- data.frame(
+  student_famsup = as.vector(placementData$famsup),
+  student_master = as.vector(placementData$mba_p)
 )
 
-# Create the plot
-ggplot(df_master, aes(x = student_mba, y = student_salary, color = salary_category)) +
-  geom_point(size = 2, shape = 16) +
-  geom_smooth(aes(group = salary_category), method = "lm", se = FALSE, color = "#D81159") +
-  scale_color_manual(values = c("#FFBC42", "#73D2DE"), 
-                     name = "Salary Category", 
-                     labels = c("<= 300k", "> 300k", "No Salary"), 
-                     drop = FALSE,
-                     na.value = "#218380") +
-  labs(title = "Scatter Plot of Students' Master Grade to Students' Salary", x = "MBA Percentage", y = "Salary")
-
-
-
-# - Work experiences (Histogram)
-df_workex <- data.frame(
-  student_workex = as.vector(placementData$workex),
-  student_salary = as.vector(placementData$salary)
-)
-# Create an overlap histogram
-ggplot(df_workex, aes(x = student_salary, fill = student_workex)) +
-  geom_histogram(alpha = 0.5, position = "identity", bins = 20, color = "black") +
-  scale_fill_manual(values = c("#970005", "#000052")) +
-  labs(
-    x = "Salary", 
-    y = "Frequency", 
-    title = "Overlap Histogram of Student Salary by Working Experience",
-    fill = "Working Experience"
+ggplot(df_famsup, aes(x = student_master, y = after_stat(density), color = stringr::str_to_title(factor(student_famsup)))) +
+  geom_density(alpha = 0.6) +
+  labs(x = "Students' Master Grade", y = "Density", title = "Density Plot of Students' Master Grade and Family Support") +
+  scale_color_discrete(name = "Family Support") +
+  theme(
+    plot.title = element_text(hjust = 0.5), 
+    legend.title = element_text(size = 12, face = "bold"), 
+    legend.position = "bottom"
   )
 
 
 
-# - Employment test (Scatterplot)
-df_employtest <- data.frame(
-  student_employtest = c(placementData$etest),
-  student_salary = c(placementData$salary),
-  salary_category = cut(placementData$salary, breaks = c(0, 300000, Inf), labels = c("Category A", "Category B"))
+# - Paid class
+df_paid <- data.frame(
+  student_paid = as.vector(placementData$paid),
+  student_master = as.vector(placementData$mba_p)
 )
 
-ggplot(df_employtest, aes(x = student_employtest, y = student_salary, color = salary_category)) +
-  geom_point(size = 2, shape = 16) +
-  geom_smooth(aes(group = salary_category), method = "lm", se = FALSE, color = "#0A236F") +
-  scale_color_manual(values = c("#C5B32D", "#3DA170"), 
-                     name = "Salary Category", 
-                     labels = c("<= 300k", "> 300k", "No Salary"), 
-                     drop = FALSE,
-                     na.value = "#5D737E") +
-  labs(title = "Scatter Plot of Students' Employment Test to Students' Salary", x = "Employment Test", y = "Salary")
-
-
-
-# - Employment specialisation (Violin Plot)
-df_employ_specialisation <- data.frame(
-  student_employ_specialisation = as.vector(placementData$specialisation),
-  student_salary = as.vector(placementData$salary)
-)
-
-ggplot(df_employ_specialisation, aes(x = factor(student_employ_specialisation), y = student_salary)) +
-  geom_violin(trim = FALSE, alpha = 0.6, color = "#607196", linewidth = 1.2) +
-  geom_jitter(aes(color = student_employ_specialisation), width = 0.2, alpha = 0.7) +
-  labs(
-    x = "Students' Employment Specialisation", 
-    y = "Students' Salary", 
-    title = "Violin Plot of Students' Employment Specialisation and Salary",
-    color = "Employment Specialisation"
-  ) +
-  scale_color_manual(values = c("#FFC759", "#FF7B9C")) +
+ggplot(df_paid, aes(x = student_master, y = after_stat(density), color = stringr::str_to_title(factor(student_paid)))) +
+  geom_density(alpha = 0.6) +
+  labs(x = "Students' Master Grade", y = "Density", title = "Density Plot of Students' Master Grade and Paid Classes") +
+  scale_color_discrete(name = "Paid Classes") +
   theme(
-    plot.title = element_text(hjust = 0.5),
-    legend.title = element_text(size = 12, face = "bold"),
+    plot.title = element_text(hjust = 0.5), 
+    legend.title = element_text(size = 12, face = "bold"), 
+    legend.position = "bottom"
+  )
+
+
+
+# - Curricular activities
+df_activities <- data.frame(
+  student_activities = as.vector(placementData$activities),
+  student_master = as.vector(placementData$mba_p)
+)
+
+ggplot(df_activities, aes(x = student_master, y = after_stat(density), color = stringr::str_to_title(factor(student_activities)))) +
+  geom_density(alpha = 0.6) +
+  labs(x = "Students' Master Grade", y = "Density", title = "Density Plot of Students' Master Grade and Curricular Activities") +
+  scale_color_discrete(name = "Curricular Activities") +
+  theme(
+    plot.title = element_text(hjust = 0.5), 
+    legend.title = element_text(size = 12, face = "bold"), 
+    legend.position = "bottom"
+  )
+
+
+
+# - Internet Access
+df_internet <- data.frame(
+  student_internet = as.vector(placementData$internet),
+  student_master = as.vector(placementData$mba_p)
+)
+
+ggplot(df_internet, aes(x = student_master, y = after_stat(density), color = stringr::str_to_title(factor(student_internet)))) +
+  geom_density(alpha = 0.6) +
+  labs(x = "Students' Master Grade", y = "Density", title = "Density Plot of Students' Master Grade and Internet Access") +
+  scale_color_discrete(name = "Internet Access") +
+  theme(
+    plot.title = element_text(hjust = 0.5), 
+    legend.title = element_text(size = 12, face = "bold"), 
+    legend.position = "bottom"
+  )
+
+
+
+# - Secondary Education Board
+df_secondary_board <- data.frame(
+  student_secondary_board = as.vector(placementData$ssc_b),
+  student_master = as.vector(placementData$mba_p)
+)
+
+ggplot(df_secondary_board, aes(x = student_master, y = after_stat(density), color = stringr::str_to_title(factor(student_secondary_board)))) +
+  geom_density(alpha = 0.6) +
+  labs(x = "Students' Master Grade", y = "Density", title = "Density Plot of Students' Master Grade and Secondary Education Board") +
+  scale_color_discrete(name = "Secondary Education Board") +
+  theme(
+    plot.title = element_text(hjust = 0.5), 
+    legend.title = element_text(size = 12, face = "bold"), 
+    legend.position = "bottom"
+  )
+
+
+
+# - Higher secondary Education Board
+df_higher_secondary_board <- data.frame(
+  student_higher_secondary_board = as.vector(placementData$hsc_b),
+  student_master = as.vector(placementData$mba_p)
+)
+
+ggplot(df_higher_secondary_board, aes(x = student_master, y = after_stat(density), color = stringr::str_to_title(factor(student_higher_secondary_board)))) +
+  geom_density(alpha = 0.6) +
+  labs(x = "Students' Master Grade", y = "Density", title = "Density Plot of Students' Master Grade and Higher Secondary Education Board") +
+  scale_color_discrete(name = "Higher Secondary Education Board") +
+  theme(
+    plot.title = element_text(hjust = 0.5), 
+    legend.title = element_text(size = 12, face = "bold"), 
     legend.position = "bottom"
   )

@@ -13,6 +13,8 @@ library(ggplot2)
 library(reshape2)
 # library(stringr)
 
+
+
 # Read .csv file
 placementData <- read.table(
   "C:/Users/User/Documents - Local/Degree/Sem 1/PFDA/Assignment/Assignment RScripts/placement_data.csv", 

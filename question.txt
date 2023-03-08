@@ -1,8 +1,8 @@
 Generate Raw Analysis (One Attribute)
-- Age (Line Chart)
+- Age (Count Plot)
 - Address (Count Plot)
 - Gender (Count Plot)
-- Salary (Line Chart)
+- Salary (Count Plot)
 - Placement (Count Plot)
 
 Question 1 - What will affect students to get a placement? (Bar Chart)
@@ -18,7 +18,7 @@ Question 1 - What will affect students to get a placement? (Bar Chart)
 - Curricular activities
 - Internet Access
 
-Question 2a - What will affect students to get grades higher than 70 marks in secondary school and higher secondary school? (Pie Chart)
+Question 2 - What will affect students to get grades higher than 70 marks in secondary school and higher secondary school? (Pie Chart)
 - Mother education
 - Father education
 - Mother current job
@@ -30,7 +30,7 @@ Question 2a - What will affect students to get grades higher than 70 marks in se
 - Secondary eduboard
 - Higher secondary eduboard
 
-Question 2b - What will affect students to get grades higher than 70 marks in degree? (Boxplot)
+Question 3 - What will affect students to get grades higher than 70 marks in degree? (Boxplot)
 - Mother education
 - Father education
 - Mother current job
@@ -42,7 +42,7 @@ Question 2b - What will affect students to get grades higher than 70 marks in de
 - Secondary eduboard
 - Higher secondary eduboard
 
-Question 2c - What will affect students to get grades higher than 70 marks in master? (Density Plot)
+Question 4 - What will affect students to get grades higher than 70 marks in master? (Density Plot)
 - Mother education
 - Father education
 - Mother current job
@@ -54,7 +54,7 @@ Question 2c - What will affect students to get grades higher than 70 marks in ma
 - Secondary eduboard
 - Higher secondary eduboard
 
-Question 2d - What will affect students to get grades higher than 70 marks in master? (Violin Plot)
+Question 5 - What will affect students to get grades higher than 80 marks in employment test? (Violin Plot)
 - Mother education
 - Father education
 - Mother current job
@@ -66,7 +66,7 @@ Question 2d - What will affect students to get grades higher than 70 marks in ma
 - Secondary eduboard
 - Higher secondary eduboard
 
-Question 3 - What will affect students to have paid classes?
+Question 6 - What will affect students to have paid classes?
 - Mother education (F. Polygon)
 - Father education (F. Polygon)
 - Mother current job (Histogram)
@@ -76,7 +76,7 @@ Question 3 - What will affect students to have paid classes?
 - Address (Histogram) 
 - Curricular activities (Histogram)
 
-Question 4 - What will affect students' salary?
+Question 7 - What will affect students' salary?
 - Secondary eduboard (Boxplot)
 - Secondary grade (Density Plot)
 - Higher secondary eduboard (Boxplot)

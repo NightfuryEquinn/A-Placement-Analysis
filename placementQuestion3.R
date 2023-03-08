@@ -29,194 +29,172 @@ newPlacementData <- na.omit(placementData)
 
 
 
-# Question 3 - What will affect students to have paid classes?
-educationLevel <- c(
-  "No education",
-  "Primary education",
-  "Secondary education",
-  "Degree Level",
-  "Post Graduate"
+placementData[is.na(placementData)] <- 0
+
+for (col in c("Medu", "Fedu")) {
+  placementData[[col]][placementData[[col]] == 0] <- "No Education"
+  placementData[[col]][placementData[[col]] == 1] <- "Primary Education"
+  placementData[[col]][placementData[[col]] == 2] <- "Secondary Education"
+  placementData[[col]][placementData[[col]] == 3] <- "Degree Level"
+  placementData[[col]][placementData[[col]] == 4] <- "Post Graduate"
+}
+
+
+
+# Question 3 - What will affect students' degree? (Boxplot)
+# - Mother education
+df_mom_edu <- data.frame(
+  mom_edu_x = as.vector(placementData$Medu),
+  mom_edu_y = as.vector(placementData$degree_p)
 )
 
-
-
-# - Mother education (F.Polygon)
-df_mom_education <- data.frame(
-  mom_education = as.vector(placementData$Medu),
-  student_paid = as.vector(placementData$paid)
-)
-
-freq_table <- df_mom_education %>% 
-  group_by(mom_education, student_paid) %>% 
-  summarize(count = n())
-
-ggplot(freq_table, aes(x = mom_education, y = count, color = student_paid)) + 
-  geom_line(stat = "identity") + 
-  geom_point() + 
+ggplot(df_mom_edu, aes(x = factor(mom_edu_x), y = mom_edu_y)) +
+  geom_boxplot(fill = c("#264653", "#2A9D8F", "#E9C46A", "#F4A261", "#E76F51")) +
   labs(
-    title = "Frequency Polygon of Mother's Education by Paid Classes",
-    x = "Mother's Education Level",
-    y = "Count",
-    color = "Paid Classes"
+    x = "Mother's Education", 
+    y = "Grade", 
+    title = "Boxplot of Mother's Education and Students' Degree Grade"
+  ) 
+
+
+
+# - Father education
+df_dad_edu <- data.frame(
+  dad_edu_x = as.vector(placementData$Fedu),
+  dad_edu_y = as.vector(placementData$degree_p)
+)
+
+ggplot(df_dad_edu, aes(x = factor(dad_edu_x), y = dad_edu_y)) +
+  geom_boxplot(fill = c("#264653", "#2A9D8F", "#E9C46A", "#F4A261", "#E76F51")) +
+  labs(
+    x = "Father's Education", 
+    y = "Grade", 
+    title = "Boxplot of Father's Education and Students' Degree Grade"
   )
 
 
 
-# - Father education (F.Polygon)
-df_dad_education <- data.frame(
-  dad_education = as.vector(placementData$Fedu),
-  student_paid = as.vector(placementData$paid)
-)
-
-freq_table <- df_dad_education %>% 
-  group_by(dad_education, student_paid) %>% 
-  summarize(count = n())
-
-ggplot(freq_table, aes(x = dad_education, y = count, color = student_paid)) + 
-  geom_line(stat = "identity") + 
-  geom_point() + 
-  labs(
-    title = "Frequency Polygon of Father's Education by Paid Classes",
-    x = "Father's Education Level",
-    y = "Count",
-    color = "Paid Classes"
-  )
-
-
-
-# - Mother current job (Histogram)
+# - Mother current job
 df_mom_job <- data.frame(
-  mom_job = as.vector(placementData$Mjob),
-  student_paid = as.vector(placementData$paid)
+  mom_job_x = as.vector(placementData$Mjob),
+  mom_job_y = as.vector(placementData$degree_p)
 )
 
-ggplot(df_mom_job, aes(x = stringr::str_to_title(student_paid), fill = stringr::str_to_title(mom_job))) +
-  geom_histogram(
-    alpha = 0.5, 
-    position = "identity", 
-    stat = "count", 
-    color = "black"
-  ) +
-  scale_fill_manual(values = c("#D3F8E2", "#E4C1F9", "#F694C1", "#EDE7B1", "#A9DEF9")) +
+ggplot(df_mom_job, aes(x = stringr::str_to_title(factor(mom_job_x)), y = mom_job_y)) +
+  geom_boxplot(fill = c("#264653", "#2A9D8F", "#E9C46A", "#F4A261", "#E76F51")) +
   labs(
-    x = "Having Paid Classes", 
-    y = "Frequency", 
-    title = "Overlap Histogram of Student having Paid Classes by Mother's Current Job",
-    fill = "Family Support"
-  ) +
-  geom_text(
-    aes(label = after_stat(count)),
-    stat = "count",
-    position = position_dodge(width = 0.9),
-    vjust = 0.5,
-    size = 4
-  )
+    x = "Mother's Current Job", 
+    y = "Grade", 
+    title = "Boxplot of Mother's Current Job and Students' Degree Grade"
+  ) 
 
 
 
-# - Father current job (Histogram)
+# - Father current job
+df_dad_job <- data.frame(
+  dad_job_x = as.vector(placementData$Fjob),
+  dad_job_y = as.vector(placementData$degree_p)
+)
+
+ggplot(df_dad_job, aes(x = stringr::str_to_title(factor(dad_job_x)), y = dad_job_y)) +
+  geom_boxplot(fill = c("#264653", "#2A9D8F", "#E9C46A", "#F4A261", "#E76F51")) +
+  labs(
+    x = "Father's Current Job", 
+    y = "Grade", 
+    title = "Boxplot of Father's Current Job and Students' Degree Grade"
+  ) 
 
 
 
-# - Family support (Histogram)
+# - Family Support
 df_famsup <- data.frame(
-  student_famsup = as.vector(placementData$famsup),
-  student_paid = as.vector(placementData$paid)
+  famsup_x = as.vector(placementData$famsup),
+  famsup_y = as.vector(placementData$degree_p)
 )
 
-ggplot(df_famsup, aes(x = stringr::str_to_title(student_paid), fill = stringr::str_to_title(student_famsup))) +
-  geom_histogram(
-    alpha = 0.5, 
-    position = "identity", 
-    stat = "count", 
-    color = "black"
-  ) +
-  scale_fill_manual(values = c("#970005", "#000052")) +
+ggplot(df_famsup, aes(x = stringr::str_to_title(factor(famsup_x)), y = famsup_y)) +
+  geom_boxplot(fill = c("#2A9D8F", "#E9C46A")) +
   labs(
-    x = "Having Paid Classes", 
-    y = "Frequency", 
-    title = "Overlap Histogram of Student having Paid Classes by Family Support",
-    fill = "Family Support"
-  ) +
-  geom_text(
-    aes(label = after_stat(count)),
-    stat = "count",
-    position = position_dodge(width = 0.9),
-    vjust = 0.5,
-    size = 4
-  )
+    x = "Family Support", 
+    y = "Grade", 
+    title = "Boxplot of Family Support and Students' Degree Grade"
+  ) 
 
 
 
-# - Internet access (Histogram)
-df_internet <- data.frame(
-  student_internet = as.vector(placementData$internet),
-  student_paid = as.vector(placementData$paid)
+# - Paid class
+df_paid <- data.frame(
+  paid_x = as.vector(placementData$paid),
+  paid_y = as.vector(placementData$degree_p)
 )
 
-ggplot(df_internet, aes(x = stringr::str_to_title(student_paid), fill = stringr::str_to_title(student_internet))) +
-  geom_histogram(alpha = 0.5, position = "identity", stat = "count", color = "black") +
-  scale_fill_manual(values = c("#970005", "#000052")) +
+ggplot(df_paid, aes(x = stringr::str_to_title(factor(paid_x)), y = paid_y)) +
+  geom_boxplot(fill = c("#2A9D8F", "#E9C46A")) +
   labs(
-    x = "Having Paid Classes", 
-    y = "Frequency", 
-    title = "Overlap Histogram of Student having Paid Classes by Internet Access",
-    fill = "Internet Access"
-  ) +
-  geom_text(
-    aes(label = after_stat(count)),
-    stat = "count",
-    position = position_dodge(width = 0.9),
-    vjust = 0.5,
-    size = 4
-  )
+    x = "Paid Classes", 
+    y = "Grade", 
+    title = "Boxplot of Paid Classes and Students' Degree Grade"
+  ) 
 
 
 
-# - Address (Histogram)
-df_address <- data.frame(
-  student_address = as.vector(placementData$address),
-  student_paid = as.vector(placementData$paid)
-)
-
-ggplot(df_address, aes(x = stringr::str_to_title(student_paid), fill = stringr::str_to_title(student_address))) +
-  geom_histogram(alpha = 0.5, position = "identity", stat = "count", color = "black") +
-  scale_fill_manual(values = c("#970005", "#000052")) +
-  labs(
-    x = "Having Paid Classes", 
-    y = "Frequency", 
-    title = "Overlap Histogram of Student having Paid Classes by Address",
-    fill = "Address"
-  ) +
-  geom_text(
-    aes(label = after_stat(count)),
-    stat = "count",
-    position = position_dodge(width = 0.9),
-    vjust = 0.5,
-    size = 4
-  )
-
-
-
-# - Curricular activities (Histogram)
+# - Curricular activities
 df_activities <- data.frame(
-  student_activities = as.vector(placementData$activities),
-  student_paid = as.vector(placementData$paid)
+  activities_x = as.vector(placementData$activities),
+  activities_y = as.vector(placementData$degree_p)
 )
 
-ggplot(df_activities, aes(x = stringr::str_to_title(student_paid), fill = stringr::str_to_title(student_activities))) +
-  geom_histogram(alpha = 0.5, position = "identity", stat = "count", color = "black") +
-  scale_fill_manual(values = c("#970005", "#000052")) +
+ggplot(df_activities, aes(x = stringr::str_to_title(factor(activities_x)), y = activities_y)) +
+  geom_boxplot(fill = c("#2A9D8F", "#E9C46A")) +
   labs(
-    x = "Having Paid Classes", 
-    y = "Frequency", 
-    title = "Overlap Histogram of Student having Paid Classes by Curricular Activities",
-    fill = "Curricular Activities"
-  ) +
-  geom_text(
-    aes(label = after_stat(count)),
-    stat = "count",
-    position = position_dodge(width = 0.9),
-    vjust = 0.5,
-    size = 4
-  )
+    x = "Curricular Activities", 
+    y = "Grade", 
+    title = "Boxplot of Curricular Activities and Students' Degree Grade"
+  ) 
+
+
+# - Internet Access
+df_internet <- data.frame(
+  internet_x = as.vector(placementData$internet),
+  internet_y = as.vector(placementData$degree_p)
+)
+
+ggplot(df_internet, aes(x = stringr::str_to_title(factor(internet_x)), y = internet_y)) +
+  geom_boxplot(fill = c("#2A9D8F", "#E9C46A")) +
+  labs(
+    x = "Internet Access", 
+    y = "Grade", 
+    title = "Boxplot of Internet Access and Students' Degree Grade"
+  ) 
+
+
+
+# - Secondary Education Board
+df_secondary_board <- data.frame(
+  secondary_board_x = as.vector(placementData$ssc_b),
+  secondary_board_y = as.vector(placementData$degree_p)
+)
+
+ggplot(df_secondary_board, aes(x = stringr::str_to_title(factor(secondary_board_x)), y = secondary_board_y)) +
+  geom_boxplot(fill = c("#E9C46A", "#F4A261", "#E76F51")) +
+  labs(
+    x = "Secondary Education Board", 
+    y = "Grade", 
+    title = "Boxplot of Secondary Education Board and Students' Degree Grade"
+  ) 
+
+
+
+# - Higher secondary Education Board
+df_higher_secondary_board <- data.frame(
+  higher_secondary_board_x = as.vector(placementData$hsc_b),
+  higher_secondary_board_y = as.vector(placementData$degree_p)
+)
+
+ggplot(df_higher_secondary_board, aes(x = stringr::str_to_title(factor(higher_secondary_board_x)), y = higher_secondary_board_y)) +
+  geom_boxplot(fill = c("#E9C46A", "#F4A261", "#E76F51")) +
+  labs(
+    x = "Higher Secondary Education Board", 
+    y = "Grade", 
+    title = "Boxplot of Higher Secondary Education Board and Students' Degree Grade"
+  ) 

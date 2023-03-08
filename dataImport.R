@@ -54,7 +54,7 @@ names(newPlacementData) <- alteredHeaderNames
 summary(placementData)
 summary(newPlacementData)
 
-
+# Use line graph and count plot to generate some random data
 
 ### Example of ggplot Line graph
 ## Replace R to Rural, U to Urban (Data Manipulation)

@@ -208,8 +208,6 @@ df_workex <- data.frame(
   student_workex = as.vector(placementData$workex),
   student_salary = as.vector(placementData$salary)
 )
-# Define breaks for histogram
-breaks <- as.numeric(names(table(placementData$salary)))
 # Create an overlap histogram
 ggplot(df_workex, aes(x = student_salary, fill = student_workex)) +
   geom_histogram(alpha = 0.5, position = "identity", bins = 20, color = "black") +
@@ -220,7 +218,6 @@ ggplot(df_workex, aes(x = student_salary, fill = student_workex)) +
     title = "Overlap Histogram of Student Salary by Working Experience",
     fill = "Working Experience"
   )
-
 
 
 

@@ -7,12 +7,12 @@ if(!is.null(dev.list())) dev.off()
 
 # Install relevant libraries
 # install.packages(c("crayon", "dplyr", "ggplot2", "reshape2", "stringr", "Hmisc"))
-# library(crayon)
-# library(dplyr)
+library(crayon)
+library(dplyr)
 library(ggplot2)
-# library(reshape2)
-# library(stringr)
-# library(Hmisc)
+library(reshape2)
+library(stringr)
+library(Hmisc)
 
 
 
@@ -30,6 +30,15 @@ placementData$address <- gsub("U", "Urban", placementData$address)
 placementData$gender <- gsub("F", "Female", placementData$gender)
 placementData$gender <- gsub("M", "Male", placementData$gender)
 
+# Replace numbering to education levels
+for (col in c("Medu", "Fedu")) {
+  placementData[[col]][placementData[[col]] == 0] <- "No Education"
+  placementData[[col]][placementData[[col]] == 1] <- "Primary Education"
+  placementData[[col]][placementData[[col]] == 2] <- "Secondary Education"
+  placementData[[col]][placementData[[col]] == 3] <- "Degree Level"
+  placementData[[col]][placementData[[col]] == 4] <- "Post Graduate"
+}
+
 # Remove data without salary (Data Cleaning)
 newPlacementData <- na.omit(placementData)
 
@@ -45,10 +54,10 @@ noRedData <- placementData[!duplicated_rows, ]
 # Change NA values to 0 (Data Cleaning)
 placementData[is.na(placementData)] <- 0
 
-# Change the name of headers (Data pre-processing / transformation)
+# Change the name of headers (Data Pre-processing / Transformation)
 alteredHeaderNames <- c(
   "UID", "Gender", "Age", "Address", "Mother_Education", "Father_Education",
-  "Mother_Current_Job", "Father_Current_Job", "Family_Support", "Paid Classes",
+  "Mother_Current_Job", "Father_Current_Job", "Family_Support", "Paid_Classes",
   "Curricular_Activities", "Internet_Usage", "Secondary_Grade_Percentage",
   "Secondary_Education_Board", "Higher_Secondary_Grade_Percentage",
   "Higher_Secondary_Education_Board", "Higher_Secondary_Specialism",
@@ -60,9 +69,28 @@ alteredHeaderNames <- c(
 names(placementData) <- alteredHeaderNames
 names(newPlacementData) <- alteredHeaderNames
 
-# Get summary of the filtered .csv file (Data summarisation)
+# Get summary of the filtered .csv file (Data exploration)
 summary(placementData)
 summary(newPlacementData)
+
+names(placementData)
+names(newPlacementData)
+
+nrow(placementData)
+nrow(newPlacementData)
+
+ncol(placementData)
+ncol(newPlacementData)
+
+str(placementData)
+str(newPlacementData)
+
+head(placementData)
+head(newPlacementData)
+
+tail(placementData)
+tail(newPlacementData)
+
 
 # Use line graph and count plot to generate some random raw analysis about the dataset
 # - Age (Count Plot)
@@ -72,7 +100,9 @@ df_age <- data.frame(
 
 ggplot(df_age, aes(x = studentAge, fill = factor(studentAge))) +
   geom_bar() +
-  scale_fill_manual(values = c("#7400B8", "#5E60CE", "#4EA8DE", "#56CFE1", "#72EFDD", "#52B788")) +
+  scale_fill_manual(values = c(
+    "#7400B8", "#5E60CE", "#4EA8DE", "#56CFE1", "#72EFDD", "#52B788"
+  )) +
   labs(
     x = "Student Age",
     y = "Count",

@@ -6,33 +6,81 @@ if(!is.null(dev.list())) dev.off()
 
 
 # Install relevant libraries
-# install.packages(c("crayon", "dplyr", "ggplot2", "reshape2", "stringr"))
-# library(crayon)
+# install.packages(c("crayon", "dplyr", "ggplot2", "reshape2", "stringr", "Hmisc"))
+library(crayon)
 library(dplyr)
 library(ggplot2)
 library(reshape2)
-# library(stringr)
+library(stringr)
+library(Hmisc)
 
 
 
-# Read .csv file
+# Import the .csv file (Data Import)
 placementData <- read.table(
   "C:/Users/User/Documents - Local/Degree/Sem 1/PFDA/Assignment/Assignment RScripts/placement_data.csv", 
   header = TRUE, 
   sep = ","
 )
 
+# Replace R to Rural, U to Urban (Data Manipulation)
+placementData$address <- gsub("R", "Rural", placementData$address)
+placementData$address <- gsub("U", "Urban", placementData$address)
 
+placementData$gender <- gsub("F", "Female", placementData$gender)
+placementData$gender <- gsub("M", "Male", placementData$gender)
 
-# Clean rows with NA values (No placement, no salary)
+# Replace numbering to education levels
+for (col in c("Medu", "Fedu")) {
+  placementData[[col]][placementData[[col]] == 0] <- "No Education"
+  placementData[[col]][placementData[[col]] == 1] <- "Primary Education"
+  placementData[[col]][placementData[[col]] == 2] <- "Secondary Education"
+  placementData[[col]][placementData[[col]] == 3] <- "Degree Level"
+  placementData[[col]][placementData[[col]] == 4] <- "Post Graduate"
+}
+
+# Remove data without salary (Data Cleaning)
 newPlacementData <- na.omit(placementData)
+
+# Check for duplicated rows (Data Cleaning)
+duplicated_rows <- duplicated(placementData)
+
+# Print the number of duplicated rows (Data Cleaning)
+cat("Number of duplicated rows:", sum(duplicated_rows), "\n")
+
+# Remove duplicated rows (Data Cleaning)
+noRedData <- placementData[!duplicated_rows, ]
+
+# Change NA values to 0 (Data Cleaning)
+placementData[is.na(placementData)] <- 0
+
+# Change the name of headers (Data Pre-processing / Transformation)
+alteredHeaderNames <- c(
+  "UID", "Gender", "Age", "Address", "Mother_Education", "Father_Education",
+  "Mother_Current_Job", "Father_Current_Job", "Family_Support", "Paid_Classes",
+  "Curricular_Activities", "Internet_Usage", "Secondary_Grade_Percentage",
+  "Secondary_Education_Board", "Higher_Secondary_Grade_Percentage",
+  "Higher_Secondary_Education_Board", "Higher_Secondary_Specialism",
+  "Degree_Grade_Percentage", "Degree_Specialism", "Working_Experience",
+  "Employment_Test", "Working_Specialism", "Master_Grade_Percentage",
+  "Placement_Status", "Salary"
+)
+
+names(placementData) <- alteredHeaderNames
+names(newPlacementData) <- alteredHeaderNames
 
 
 
 # Question 1 - What will affect students to get a placement?
 # - Secondary school grade percentage (If higher than 70 marks)
-ssc_p_placed <- sum(placementData$status == "Placed" & placementData$ssc_p >= 70)
-ssc_p_not_placed <- sum(placementData$status == "Not Placed" & placementData$ssc_p >= 70)
+ssc_p_placed <- sum(
+  placementData$Placement_Status == "Placed" &
+  placementData$Secondary_Grade_Percentage >= 70
+)
+ssc_p_not_placed <- sum(
+  placementData$Placement_Status == "Not Placed" & 
+  placementData$Secondary_Grade_Percentage >= 70
+)
 
 ssc_data_for_placement_status <- data.frame(
   Status = c("Placed", "Not Placed"),
@@ -51,8 +99,14 @@ ggplot(ssc_data_for_placement_status, aes(x = Status, y = Count, fill = Status))
 
 
 # - Higher secondary school grade percentage (If higher than 70 marks)
-hsc_p_placed <- sum(placementData$status == "Placed" & placementData$hsc_p >= 70)
-hsc_p_not_placed <- sum(placementData$status == "Not Placed" & placementData$hsc_p >= 70)
+hsc_p_placed <- sum(
+  placementData$Placement_Status == "Placed" & 
+  placementData$Higher_Secondary_Grade_Percentage >= 70
+)
+hsc_p_not_placed <- sum(
+  placementData$Placement_Status == "Not Placed" & 
+  placementData$Higher_Secondary_Grade_Percentage >= 70
+)
 
 hsc_data_for_placement_status <- data.frame(
   Status = c("Placed", "Not Placed"),
@@ -70,9 +124,15 @@ ggplot(hsc_data_for_placement_status, aes(x = Status, y = Count, fill = Status))
 
 
 
-# - Degree grade
-degree_p_placed <- sum(placementData$status == "Placed" & placementData$degree_p >= 70)
-degree_p_not_placed <- sum(placementData$status == "Not Placed" & placementData$degree_p >= 70)
+# - Degree grade (If higher than 70 marks)
+degree_p_placed <- sum(
+  placementData$Placement_Status == "Placed" & 
+  placementData$Degree_Grade_Percentage >= 70
+)
+degree_p_not_placed <- sum(
+  placementData$Placement_Status == "Not Placed" & 
+  placementData$Degree_Grade_Percentage >= 70
+)
 
 degree_data_for_placement_status <- data.frame(
   Status = c("Placed", "Not Placed"),
@@ -90,9 +150,15 @@ ggplot(degree_data_for_placement_status, aes(x = Status, y = Count, fill = Statu
 
 
 
-# - Master grade
-mba_p_placed <- sum(placementData$status == "Placed" & placementData$mba_p >= 70)
-mba_p_not_placed <- sum(placementData$status == "Not Placed" & placementData$mba_p >= 70)
+# - Master grade (If higher than 70 marks)
+mba_p_placed <- sum(
+  placementData$Placement_Status == "Placed" &
+  placementData$Master_Grade_Percentage >= 70
+)
+mba_p_not_placed <- sum(
+  placementData$Placement_Status == "Not Placed" & 
+  placementData$Master_Grade_Percentage >= 70
+)
 
 mba_data_for_placement_status <- data.frame(
   Status = c("Placed", "Not Placed"),
@@ -111,10 +177,10 @@ ggplot(mba_data_for_placement_status, aes(x = Status, y = Count, fill = Status))
 
 
 # - Working experience
-workex_placed_yes <- sum(placementData$status == "Placed" & placementData$workex == "Yes")
-workex_not_placed_yes <- sum(placementData$status == "Not Placed" & placementData$workex >= "Yes")
-workex_placed_no <- sum(placementData$status == "Placed" & placementData$workex == "No")
-workex_not_placed_no <- sum(placementData$status == "Not Placed" & placementData$workex == "No")
+workex_placed_yes <- sum(placementData$Placement_Status == "Placed" & placementData$Working_Experience == "Yes")
+workex_not_placed_yes <- sum(placementData$Placement_Status == "Not Placed" & placementData$Working_Experience >= "Yes")
+workex_placed_no <- sum(placementData$Placement_Status == "Placed" & placementData$Working_Experience == "No")
+workex_not_placed_no <- sum(placementData$Placement_Status == "Not Placed" & placementData$Working_Experience == "No")
 
 workex_data_for_placement_status <- data.frame(
   Status = c(
@@ -144,8 +210,14 @@ ggplot(workex_data_for_placement_status, aes(x = Status, y = Count, fill = Statu
 
 
 # - Employment test (If higher than 80 marks)
-etest_p_placed <- sum(placementData$status == "Placed" & placementData$etest_p >= 80)
-etest_p_not_placed <- sum(placementData$status == "Not Placed" & placementData$etest_p >= 80)
+etest_p_placed <- sum(
+  placementData$Placement_Status == "Placed" & 
+  placementData$Employment_Test >= 80
+)
+etest_p_not_placed <- sum(
+  placementData$Placement_Status == "Not Placed" & 
+  placementData$Employment_Test >= 80
+)
 
 etest_data_for_placement_status <- data.frame(
   Status = c("Placed", "Not Placed"),
@@ -164,7 +236,7 @@ ggplot(etest_data_for_placement_status, aes(x = Status, y = Count, fill = Status
 
 
 # - Age
-ages <- table(placementData$age)
+ages <- table(placementData$Age)
 # Create empty vector
 age_placed <- vector("numeric", length(ages))
 age_not_placed <- vector("numeric", length(ages))
@@ -175,8 +247,8 @@ age_num <- as.numeric(names(ages))
 for(i in 1:length(age_num)) {
   age <- age_num[i]
   
-  count_age_placed <- sum(placementData$age == age & placementData$status == "Placed")
-  count_age_not_placed <- sum(placementData$age == age & placementData$status == "Not Placed")
+  count_age_placed <- sum(placementData$Age == age & placementData$Placement_Status == "Placed")
+  count_age_not_placed <- sum(placementData$Age == age & placementData$Placement_Status == "Not Placed")
   
   age_placed[i] <- count_age_placed
   age_not_placed[i] <-count_age_not_placed
@@ -197,11 +269,7 @@ age_data_for_placement_status_long <- melt(
 
 ggplot(
   age_data_for_placement_status_long, 
-  aes(
-    x = factor(Age_Group), 
-    y = Count, 
-    fill = Placement_Status
-    )) +
+  aes(x = factor(Age_Group), y = Count, fill = Placement_Status)) +
   geom_bar(position = "dodge", stat = "identity") +
   labs(x = "Age", y = "Count", fill = "") +
   ggtitle("Students' Placement to Students' Age") +
@@ -212,15 +280,19 @@ ggplot(
 # - Family Support
 famsup_data_for_placement_status <- placementData %>%
   # Group data frame by status and family support
-  group_by(status, famsup) %>%
-  # Summarises grouped data count
+  group_by(Placement_Status, Family_Support) %>%
+  # Summarizes grouped data count
   summarise(Count = n()) %>%
   # Removes grouping info from data frame
   ungroup() %>%
   # Add a new column to the data frame called Status based on values of Status and Family Support
   # If yes, then Placed or Not Placed with Family Support
   # If no, then Placed or Not Placed without Family Support
-  mutate(Status = ifelse(famsup == "yes", paste0(status, " with Family Support"), paste0(status, " without Family Support"))) %>%
+  mutate(Status = ifelse(
+    Family_Support == "yes", 
+    paste0(Placement_Status, " with Family Support"), 
+    paste0(Placement_Status, " without Family Support")
+  )) %>%
   # Select both columns from data frame
   select(Status, Count)
 
@@ -239,10 +311,14 @@ ggplot(famsup_data_for_placement_status, aes(x = Status, y = Count, fill = Statu
 
 # - Paid class
 paid_data_for_placement_status <- placementData %>%
-  group_by(status, paid) %>%
+  group_by(Placement_Status, Paid_Classes) %>%
   summarise(Count = n()) %>%
   ungroup() %>%
-  mutate(Status = ifelse(paid == "yes", paste0(status, " with Paid Class"), paste0(status, " without Paid Class"))) %>%
+  mutate(Status = ifelse(
+    Paid_Classes == "yes", 
+    paste0(Placement_Status, " with Paid Class"),
+    paste0(Placement_Status, " without Paid Class")
+  )) %>%
   select(Status, Count)
 
 ggplot(paid_data_for_placement_status, aes(x = Status, y = Count, fill = Status)) +
@@ -260,10 +336,14 @@ ggplot(paid_data_for_placement_status, aes(x = Status, y = Count, fill = Status)
 
 # - Curricular activities
 activities_data_for_placement_status <- placementData %>%
-  group_by(status, activities) %>%
+  group_by(Placement_Status, Curricular_Activities) %>%
   summarise(Count = n()) %>%
   ungroup() %>%
-  mutate(Status = ifelse(activities == "yes", paste0(status, " with Curricular Activities"), paste0(status, " without Curricular Activities"))) %>%
+  mutate(Status = ifelse(
+    Curricular_Activities == "yes",
+    paste0(Placement_Status, " with Curricular Activities"), 
+    paste0(Placement_Status, " without Curricular Activities")
+  )) %>%
   select(Status, Count)
 
 ggplot(activities_data_for_placement_status, aes(x = Status, y = Count, fill = Status)) +
@@ -281,10 +361,14 @@ ggplot(activities_data_for_placement_status, aes(x = Status, y = Count, fill = S
 
 # - Internet Access
 internet_data_for_placement_status <- placementData %>%
-  group_by(status, internet) %>%
+  group_by(Placement_Status, Internet_Usage) %>%
   summarise(Count = n()) %>%
   ungroup() %>%
-  mutate(Status = ifelse(internet == "yes", paste0(status, " with Internet Access"), paste0(status, " without Internet Access"))) %>%
+  mutate(Status = ifelse(
+    Internet_Usage == "yes", 
+    paste0(Placement_Status, " with Internet Access"), 
+    paste0(Placement_Status, " without Internet Access")
+  )) %>%
   select(Status, Count)
 
 ggplot(internet_data_for_placement_status, aes(x = Status, y = Count, fill = Status)) +

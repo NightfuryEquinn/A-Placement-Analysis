@@ -30,7 +30,7 @@ Question 2 - What will affect students to get grades higher than 70 marks in sec
 - Secondary eduboard
 - Higher secondary eduboard
 
-Question 3 - What will affect students to get grades higher than 70 marks in degree? (Boxplot)
+Question 3 - What will affect students' degree? (Boxplot)
 - Mother education
 - Father education
 - Mother current job
@@ -42,7 +42,7 @@ Question 3 - What will affect students to get grades higher than 70 marks in deg
 - Secondary eduboard
 - Higher secondary eduboard
 
-Question 4 - What will affect students to get grades higher than 70 marks in master? (Density Plot)
+Question 4 - What will affect students' master? (Density Plot)
 - Mother education
 - Father education
 - Mother current job
@@ -54,7 +54,7 @@ Question 4 - What will affect students to get grades higher than 70 marks in mas
 - Secondary eduboard
 - Higher secondary eduboard
 
-Question 5 - What will affect students to get grades higher than 80 marks in employment test? (Violin Plot)
+Question 5 - What will affect students' employment test? (Violin Plot)
 - Mother education
 - Father education
 - Mother current job

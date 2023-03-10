@@ -133,7 +133,7 @@ ggplot(df_mom_job, aes(x = stringr::str_to_title(student_paid), fill = stringr::
   labs(
     x = "Having Paid Classes", 
     y = "Frequency", 
-    title = "Overlap Histogram of Student having Paid Classes by Mother's Current Job",
+    title = "Histogram of Student having Paid Classes by Mother's Current Job",
     fill = "Family Support"
   ) +
   geom_text(
@@ -163,7 +163,7 @@ ggplot(df_dad_job, aes(x = stringr::str_to_title(student_paid), fill = stringr::
   labs(
     x = "Having Paid Classes", 
     y = "Frequency", 
-    title = "Overlap Histogram of Student having Paid Classes by Father's Current Job",
+    title = "Histogram of Student having Paid Classes by Father's Current Job",
     fill = "Family Support"
   ) +
   geom_text(
@@ -262,7 +262,12 @@ df_activities <- data.frame(
   student_paid = as.vector(placementData$Paid_Classes)
 )
 
-ggplot(df_activities, aes(x = stringr::str_to_title(student_paid), fill = stringr::str_to_title(student_activities))) +
+ggplot(
+  df_activities, 
+  aes(
+    x = stringr::str_to_title(student_paid), 
+    fill = stringr::str_to_title(student_activities)
+  )) +
   geom_histogram(alpha = 0.5, position = "identity", stat = "count", color = "black") +
   scale_fill_manual(values = c("#970005", "#000052")) +
   labs(

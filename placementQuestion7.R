@@ -6,41 +6,79 @@ if(!is.null(dev.list())) dev.off()
 
 
 # Install relevant libraries
-# install.packages(c("crayon", "dplyr", "ggplot2", "reshape2", "stringr"))
-# library(crayon)
+# install.packages(c("crayon", "dplyr", "ggplot2", "reshape2", "stringr", "Hmisc"))
+library(crayon)
 library(dplyr)
 library(ggplot2)
-# library(reshape2)
-# library(stringr)
+library(reshape2)
+library(stringr)
+library(Hmisc)
 
 
 
-# Read .csv file
+# Import the .csv file (Data Import)
 placementData <- read.table(
   "C:/Users/User/Documents - Local/Degree/Sem 1/PFDA/Assignment/Assignment RScripts/placement_data.csv", 
   header = TRUE, 
   sep = ","
 )
 
+# Replace R to Rural, U to Urban (Data Manipulation)
+placementData$address <- gsub("R", "Rural", placementData$address)
+placementData$address <- gsub("U", "Urban", placementData$address)
 
+placementData$gender <- gsub("F", "Female", placementData$gender)
+placementData$gender <- gsub("M", "Male", placementData$gender)
 
-# Clean rows with NA values (No placement, no salary)
+# Replace numbering to education levels 
+for (col in c("Medu", "Fedu")) {
+  placementData[[col]][placementData[[col]] == 0] <- "No Education"
+  placementData[[col]][placementData[[col]] == 1] <- "Primary Education"
+  placementData[[col]][placementData[[col]] == 2] <- "Secondary Education"
+  placementData[[col]][placementData[[col]] == 3] <- "Degree Level"
+  placementData[[col]][placementData[[col]] == 4] <- "Post Graduate"
+}
+
+# Remove data without salary (Data Cleaning)
 newPlacementData <- na.omit(placementData)
 
+# Check for duplicated rows (Data Cleaning)
+duplicated_rows <- duplicated(placementData)
 
+# Print the number of duplicated rows (Data Cleaning)
+cat("Number of duplicated rows:", sum(duplicated_rows), "\n")
 
+# Remove duplicated rows (Data Cleaning)
+noRedData <- placementData[!duplicated_rows, ]
+
+# Change NA values to 0 (Data Cleaning)
 placementData[is.na(placementData)] <- 0
+
+# Change the name of headers (Data Pre-processing / Transformation)
+alteredHeaderNames <- c(
+  "UID", "Gender", "Age", "Address", "Mother_Education", "Father_Education",
+  "Mother_Current_Job", "Father_Current_Job", "Family_Support", "Paid_Classes",
+  "Curricular_Activities", "Internet_Usage", "Secondary_Grade_Percentage",
+  "Secondary_Education_Board", "Higher_Secondary_Grade_Percentage",
+  "Higher_Secondary_Education_Board", "Higher_Secondary_Specialism",
+  "Degree_Grade_Percentage", "Degree_Specialism", "Working_Experience",
+  "Employment_Test", "Working_Specialism", "Master_Grade_Percentage",
+  "Placement_Status", "Salary"
+)
+
+names(placementData) <- alteredHeaderNames
+names(newPlacementData) <- alteredHeaderNames
 
 
 
 # Question 4 - What will affect students' salary?
 # - Secondary eduboard (Boxplot)
-secondary_edu_table <- table(placementData$ssc_b)
+secondary_edu_table <- table(placementData$Secondary_Education_Board)
 secondary_edu_name <- as.vector(names(secondary_edu_table))
 
 df_secondary <- data.frame(
   secondary_x = secondary_edu_name,
-  secondary_y = as.vector(placementData$salary)
+  secondary_y = as.vector(placementData$Salary)
 )
 
 ggplot(df_secondary, aes(x = secondary_x, y = secondary_y)) +
@@ -59,13 +97,19 @@ ggplot(df_secondary, aes(x = secondary_x, y = secondary_y)) +
 
 # - Secondary grade (Density Plot)
 df_secondary_grade <- data.frame(
-  student_secondary_grade = as.vector(placementData$ssc_p),
-  student_salary = as.vector(placementData$salary)
+  student_secondary_grade = as.vector(placementData$Secondary_Grade_Percentage),
+  student_salary = as.vector(placementData$Salary)
 )
 
-ggplot(df_secondary_grade, aes(x = student_secondary_grade, y = after_stat(density), color = factor(student_salary))) +
-  geom_density(alpha = 0.6) +
-  labs(x = "Students' Secondary Grade", y = "Density", title = "Density Plot of Students' Secondary Grade and Salary") +
+ggplot(
+    df_secondary_grade, 
+    aes(x = student_secondary_grade, y = after_stat(density), color = factor(student_salary))
+  ) +
+  geom_density(alpha = 0.6, linewidth = 1) +
+  labs(
+    x = "Students' Secondary Grade", y = "Density", 
+    title = "Density Plot of Students' Secondary Grade and Salary"
+  ) +
   scale_color_discrete(name = "Students' Salary") +
   theme(
     plot.title = element_text(hjust = 0.5), 
@@ -76,12 +120,12 @@ ggplot(df_secondary_grade, aes(x = student_secondary_grade, y = after_stat(densi
 
 
 # - Higher secondary eduboard (Boxplot)
-higher_secondary_edu_table <- table(placementData$hsc_b)
+higher_secondary_edu_table <- table(placementData$Higher_Secondary_Education_Board)
 higher_secondary_edu_name <- as.vector(names(higher_secondary_edu_table))
 
 df_higher_secondary <- data.frame(
   higher_secondary_x = higher_secondary_edu_name,
-  higher_secondary_y = as.vector(placementData$salary)
+  higher_secondary_y = as.vector(placementData$Salary)
 )
 
 ggplot(df_higher_secondary, aes(x = higher_secondary_x, y = higher_secondary_y)) +
@@ -100,13 +144,19 @@ ggplot(df_higher_secondary, aes(x = higher_secondary_x, y = higher_secondary_y))
 
 # - Higher secondary grade (Density Plot)
 df_higher_secondary_grade <- data.frame(
-  student_higher_secondary_grade = as.vector(placementData$hsc_p),
-  student_salary = as.vector(placementData$salary)
+  student_higher_secondary_grade = as.vector(placementData$Higher_Secondary_Grade_Percentage),
+  student_salary = as.vector(placementData$Salary)
 )
 
-ggplot(df_higher_secondary_grade, aes(x = student_higher_secondary_grade, y = after_stat(density), color = factor(student_salary))) +
-  geom_density(alpha = 0.6) +
-  labs(x = "Students' Higher Secondary Grade", y = "Density", title = "Density Plot of Students' Higher Secondary Grade and Salary") +
+ggplot(
+    df_higher_secondary_grade,
+    aes(x = student_higher_secondary_grade, y = after_stat(density), color = factor(student_salary))
+  ) +
+  geom_density(alpha = 0.6, linewidth = 1) +
+  labs(
+    x = "Students' Higher Secondary Grade", y = "Density",
+    title = "Density Plot of Students' Higher Secondary Grade and Salary"
+  ) +
   scale_color_discrete(name = "Students' Salary") +
   theme(
     plot.title = element_text(hjust = 0.5), 
@@ -118,11 +168,14 @@ ggplot(df_higher_secondary_grade, aes(x = student_higher_secondary_grade, y = af
 
 # - Higher secondary specialisation (Violin Plot)
 df_higher_secondary_specialisation <- data.frame(
-  student_higher_secondary_specialisation = as.vector(placementData$hsc_s),
-  student_salary = as.vector(placementData$salary)
+  student_higher_secondary_specialisation = as.vector(placementData$Higher_Secondary_Specialism),
+  student_salary = as.vector(placementData$Salary)
 )
 
-ggplot(df_higher_secondary_specialisation, aes(x = factor(student_higher_secondary_specialisation), y = student_salary)) +
+ggplot(
+    df_higher_secondary_specialisation, 
+    aes(x = factor(student_higher_secondary_specialisation), y = student_salary)
+  ) +
   geom_violin(trim = FALSE, alpha = 0.6, color = "#110B11", linewidth = 1.2) +
   geom_jitter(aes(color = student_higher_secondary_specialisation), width = 0.2, alpha = 0.7) +
   labs(
@@ -142,12 +195,12 @@ ggplot(df_higher_secondary_specialisation, aes(x = factor(student_higher_seconda
 
 # - Degree grade (Density Plot)
 df_degree_grade <- data.frame(
-  student_degree_grade = as.vector(placementData$degree_p),
-  student_salary = as.vector(placementData$salary)
+  student_degree_grade = as.vector(placementData$Degree_Grade_Percentage),
+  student_salary = as.vector(placementData$Salary)
 )
 
 ggplot(df_degree_grade, aes(x = student_degree_grade, y = after_stat(density), color = factor(student_salary))) +
-  geom_density(alpha = 0.6) +
+  geom_density(alpha = 0.6, linewidth = 1) +
   labs(x = "Students' Degree Grade", y = "Density", title = "Density Plot of Students' Degree and Salary") +
   scale_color_discrete(name = "Students' Salary") +
   theme(
@@ -160,8 +213,8 @@ ggplot(df_degree_grade, aes(x = student_degree_grade, y = after_stat(density), c
 
 # - Degree specialisation (Violin Plot)
 df_degree_specialisation <- data.frame(
-  student_degree_specialisation = as.vector(placementData$degree_t),
-  student_salary = as.vector(placementData$salary)
+  student_degree_specialisation = as.vector(placementData$Degree_Specialism),
+  student_salary = as.vector(placementData$Salary)
 )
 
 ggplot(df_degree_specialisation, aes(x = factor(student_degree_specialisation), y = student_salary)) +
@@ -184,10 +237,10 @@ ggplot(df_degree_specialisation, aes(x = factor(student_degree_specialisation), 
 
 # - Master grade (Scatterplot)
 df_master <- data.frame(
-  student_mba = c(placementData$mba_p),
-  student_salary = c(placementData$salary),
+  student_mba = c(placementData$Master_Grade_Percentage),
+  student_salary = c(placementData$Salary),
   # Create a categorical variable based on the salary
-  salary_category = cut(placementData$salary, breaks = c(0, 300000, Inf), labels = c("Category A", "Category B"))
+  salary_category = cut(placementData$Salary, breaks = c(0, 300000, Inf), labels = c("Category A", "Category B"))
 )
 
 # Create the plot
@@ -205,8 +258,8 @@ ggplot(df_master, aes(x = student_mba, y = student_salary, color = salary_catego
 
 # - Work experiences (Histogram)
 df_workex <- data.frame(
-  student_workex = as.vector(placementData$workex),
-  student_salary = as.vector(placementData$salary)
+  student_workex = as.vector(placementData$Working_Experience),
+  student_salary = as.vector(placementData$Salary)
 )
 # Create an overlap histogram
 ggplot(df_workex, aes(x = student_salary, fill = student_workex)) +
@@ -223,9 +276,9 @@ ggplot(df_workex, aes(x = student_salary, fill = student_workex)) +
 
 # - Employment test (Scatterplot)
 df_employtest <- data.frame(
-  student_employtest = c(placementData$etest),
-  student_salary = c(placementData$salary),
-  salary_category = cut(placementData$salary, breaks = c(0, 300000, Inf), labels = c("Category A", "Category B"))
+  student_employtest = c(placementData$Employment_Test),
+  student_salary = c(placementData$Salary),
+  salary_category = cut(placementData$Salary, breaks = c(0, 300000, Inf), labels = c("Category A", "Category B"))
 )
 
 ggplot(df_employtest, aes(x = student_employtest, y = student_salary, color = salary_category)) +
@@ -242,8 +295,8 @@ ggplot(df_employtest, aes(x = student_employtest, y = student_salary, color = sa
 
 # - Employment specialisation (Violin Plot)
 df_employ_specialisation <- data.frame(
-  student_employ_specialisation = as.vector(placementData$specialisation),
-  student_salary = as.vector(placementData$salary)
+  student_employ_specialisation = as.vector(placementData$Working_Specialism),
+  student_salary = as.vector(placementData$Salary)
 )
 
 ggplot(df_employ_specialisation, aes(x = factor(student_employ_specialisation), y = student_salary)) +

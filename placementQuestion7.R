@@ -211,7 +211,7 @@ ggplot(df_degree_grade, aes(x = student_degree_grade, y = after_stat(density), c
 
 
 
-# - Degree specialisation (Violin Plot)
+# - Degree specialization (Violin Plot)
 df_degree_specialisation <- data.frame(
   student_degree_specialisation = as.vector(placementData$Degree_Specialism),
   student_salary = as.vector(placementData$Salary)
@@ -293,7 +293,7 @@ ggplot(df_employtest, aes(x = student_employtest, y = student_salary, color = sa
 
 
 
-# - Employment specialisation (Violin Plot)
+# - Employment specialization (Violin Plot)
 df_employ_specialisation <- data.frame(
   student_employ_specialisation = as.vector(placementData$Working_Specialism),
   student_salary = as.vector(placementData$Salary)

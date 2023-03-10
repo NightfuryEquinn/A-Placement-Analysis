@@ -30,7 +30,7 @@ placementData$address <- gsub("U", "Urban", placementData$address)
 placementData$gender <- gsub("F", "Female", placementData$gender)
 placementData$gender <- gsub("M", "Male", placementData$gender)
 
-# Replace numbering to education levels
+# Replace numbering to education levels 
 for (col in c("Medu", "Fedu")) {
   placementData[[col]][placementData[[col]] == 0] <- "No Education"
   placementData[[col]][placementData[[col]] == 1] <- "Primary Education"

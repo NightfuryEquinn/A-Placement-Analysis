@@ -71,7 +71,7 @@ names(newPlacementData) <- alteredHeaderNames
 
 
 
-# Question 4 - What will affect students' salary?
+# Question 7 - What will affect students' salary?
 # - Secondary eduboard (Boxplot)
 secondary_edu_table <- table(placementData$Secondary_Education_Board)
 secondary_edu_name <- as.vector(names(secondary_edu_table))

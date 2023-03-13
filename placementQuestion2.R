@@ -6,58 +6,90 @@ if(!is.null(dev.list())) dev.off()
 
 
 # Install relevant libraries
-# install.packages(c("crayon", "dplyr", "ggplot2", "reshape2", "stringr"))
-# library(crayon)
-# library(dplyr)
+# install.packages(c("crayon", "dplyr", "ggplot2", "reshape2", "stringr", "Hmisc"))
+library(crayon)
+library(dplyr)
 library(ggplot2)
-# library(reshape2)
+library(reshape2)
 library(stringr)
+library(Hmisc)
 
-# Read .csv file
+
+
+# Import the .csv file (Data Import)
 placementData <- read.table(
   "C:/Users/User/Documents - Local/Degree/Sem 1/PFDA/Assignment/Assignment RScripts/placement_data.csv", 
   header = TRUE, 
   sep = ","
 )
 
+# Replace R to Rural, U to Urban (Data Manipulation)
+placementData$address <- gsub("R", "Rural", placementData$address)
+placementData$address <- gsub("U", "Urban", placementData$address)
 
+placementData$gender <- gsub("F", "Female", placementData$gender)
+placementData$gender <- gsub("M", "Male", placementData$gender)
 
-# Clean rows with NA values (No placement, no salary)
+# Replace numbering to education levels 
+for (col in c("Medu", "Fedu")) {
+  placementData[[col]][placementData[[col]] == 0] <- "No Education"
+  placementData[[col]][placementData[[col]] == 1] <- "Primary Education"
+  placementData[[col]][placementData[[col]] == 2] <- "Secondary Education"
+  placementData[[col]][placementData[[col]] == 3] <- "Degree Level"
+  placementData[[col]][placementData[[col]] == 4] <- "Post Graduate"
+}
+
+# Remove data without salary (Data Cleaning)
 newPlacementData <- na.omit(placementData)
+
+# Check for duplicated rows (Data Cleaning)
+duplicated_rows <- duplicated(placementData)
+
+# Print the number of duplicated rows (Data Cleaning)
+cat("Number of duplicated rows:", sum(duplicated_rows), "\n")
+
+# Remove duplicated rows (Data Cleaning)
+noRedData <- placementData[!duplicated_rows, ]
+
+# Change NA values to 0 (Data Cleaning)
+placementData[is.na(placementData)] <- 0
+
+# Change the name of headers (Data Pre-processing / Transformation)
+alteredHeaderNames <- c(
+  "UID", "Gender", "Age", "Address", "Mother_Education", "Father_Education",
+  "Mother_Current_Job", "Father_Current_Job", "Family_Support", "Paid_Classes",
+  "Curricular_Activities", "Internet_Usage", "Secondary_Grade_Percentage",
+  "Secondary_Education_Board", "Higher_Secondary_Grade_Percentage",
+  "Higher_Secondary_Education_Board", "Higher_Secondary_Specialism",
+  "Degree_Grade_Percentage", "Degree_Specialism", "Working_Experience",
+  "Employment_Test", "Working_Specialism", "Master_Grade_Percentage",
+  "Placement_Status", "Salary"
+)
+
+names(placementData) <- alteredHeaderNames
+names(newPlacementData) <- alteredHeaderNames
 
 
 
 # Question 2 - What will affect students to get grades higher than 70 marks in secondary school and higher secondary school?
-educationLevel <- c(
-  "No education",
-  "Primary education",
-  "Secondary education",
-  "Degree Level",
-  "Post Graduate"
-)
-
-
-
 # - Mother education
-momEducation <- table(placementData$Medu)
+momEducation <- table(placementData$Mother_Education)
 
 momEduLevel <- as.vector(names(momEducation))
-# Rename table entry with education level
-names(momEduLevel) <- educationLevel
 # Create empty vector
-mom_pass70ssc <- vector("numeric", length(educationLevel))
-mom_pass70hsc <- vector("numeric", length(educationLevel))
+mom_pass70ssc <- vector("numeric", length(momEduLevel))
+mom_pass70hsc <- vector("numeric", length(momEduLevel))
 
-for(i in 1:length(educationLevel)) {
-  mom_count70ssc <- sum(placementData$Medu == i-1 & placementData$ssc_p >= 70)
-  mom_count70hsc <- sum(placementData$Medu == i-1 & placementData$hsc_p >= 70)
+for(i in 1:length(momEduLevel)) {
+  mom_count70ssc <- sum(placementData$Mother_Education == momEduLevel[i] & placementData$Secondary_Grade_Percentage >= 70)
+  mom_count70hsc <- sum(placementData$Mother_Education == momEduLevel[i] & placementData$Higher_Secondary_Grade_Percentage >= 70)
   
   mom_pass70ssc[i] <- mom_count70ssc
   mom_pass70hsc[i] <- mom_count70hsc
 }
 
 mom_pass70ssc_data <- data.frame(
-  Mother_Education <- educationLevel,
+  Mother_Education <- momEduLevel,
   Count <- mom_pass70ssc
 )
 
@@ -69,7 +101,7 @@ ggplot(mom_pass70ssc_data, aes(x = "", y = Count, fill = Mother_Education)) +
   scale_fill_manual(values = c("#AABA9E", "#A2AE5E", "#C6B89E", "#EDD892", "#FCB97D"))
 
 mom_pass70hsc_data <- data.frame(
-  Mother_Education <- educationLevel,
+  Mother_Education <- momEduLevel,
   Count <- mom_pass70hsc
 )
 
@@ -83,25 +115,23 @@ ggplot(mom_pass70hsc_data, aes(x = "", y = Count, fill = Mother_Education)) +
 
 
 # - Father education
-dadEducation <- table(placementData$Fedu)
+dadEducation <- table(placementData$Father_Education)
 
 dadEduLevel <- as.vector(names(dadEducation))
-# Rename table entry with education level
-names(dadEduLevel) <- educationLevel
 # Create empty vector
-dad_pass70ssc <- vector("numeric", length(educationLevel))
-dad_pass70hsc <- vector("numeric", length(educationLevel))
+dad_pass70ssc <- vector("numeric", length(dadEduLevel))
+dad_pass70hsc <- vector("numeric", length(dadEduLevel))
 
-for(i in 1:length(educationLevel)) {
-  dad_count70ssc <- sum(placementData$Fedu == i-1 & placementData$ssc_p >= 70)
-  dad_count70hsc <- sum(placementData$Fedu == i-1 & placementData$hsc_p >= 70)
+for(i in 1:length(dadEduLevel)) {
+  dad_count70ssc <- sum(placementData$Father_Education == dadEduLevel[i] & placementData$Secondary_Grade_Percentage >= 70)
+  dad_count70hsc <- sum(placementData$Father_Education == dadEduLevel[i] & placementData$Higher_Secondary_Grade_Percentage >= 70)
   
   dad_pass70ssc[i] <- dad_count70ssc
   dad_pass70hsc[i] <- dad_count70hsc
 }
 
 dad_pass70ssc_data <- data.frame(
-  Father_Education <- educationLevel,
+  Father_Education <- dadEduLevel,
   Count <- dad_pass70ssc
 )
 
@@ -113,7 +143,7 @@ ggplot(dad_pass70ssc_data, aes(x = "", y = Count, fill = Father_Education)) +
   scale_fill_manual(values = c("#FABC3C", "#BA8E46", "#F19143", "#FF773D", "#F55536"))
 
 dad_pass70hsc_data <- data.frame(
-  Father_Education <- educationLevel,
+  Father_Education <- dadEduLevel,
   Count <- dad_pass70hsc
 )
 
@@ -127,7 +157,7 @@ ggplot(dad_pass70hsc_data, aes(x = "", y = Count, fill = Father_Education)) +
 
 
 # - Mother current job
-momJob <- table(placementData$Mjob)
+momJob <- table(placementData$Mother_Current_Job)
 
 momJobName <- as.vector(names(momJob))
 
@@ -136,8 +166,8 @@ momjob_pass70ssc <- vector("numeric", length(momJobName))
 momjob_pass70hsc <- vector("numeric", length(momJobName))
 
 for(i in 1:length(momJobName)) {
-  momjob_count70ssc <- sum(placementData$Mjob == momJobName[i] & placementData$ssc_p >= 70)
-  momjob_count70hsc <- sum(placementData$Mjob == momJobName[i] & placementData$hsc_p >= 70)
+  momjob_count70ssc <- sum(placementData$Mother_Current_Job == momJobName[i] & placementData$Secondary_Grade_Percentage >= 70)
+  momjob_count70hsc <- sum(placementData$Mother_Current_Job == momJobName[i] & placementData$Higher_Secondary_Grade_Percentage >= 70)
   
   momjob_pass70ssc[i] <- momjob_count70ssc
   momjob_pass70hsc[i] <- momjob_count70hsc
@@ -170,7 +200,7 @@ ggplot(momjob_pass70hsc_data, aes(x = "", y = Count, fill = Mother_Current_Job))
 
 
 # - Father current job
-dadJob <- table(placementData$Fjob)
+dadJob <- table(placementData$Father_Current_Job)
 
 dadJobName <- as.vector(names(dadJob))
 
@@ -179,8 +209,8 @@ dadjob_pass70ssc <- vector("numeric", length(dadJobName))
 dadjob_pass70hsc <- vector("numeric", length(dadJobName))
 
 for(i in 1:length(dadJobName)) {
-  dadjob_count70ssc <- sum(placementData$Fjob == dadJobName[i] & placementData$ssc_p >= 70)
-  dadjob_count70hsc <- sum(placementData$Fjob == dadJobName[i] & placementData$hsc_p >= 70)
+  dadjob_count70ssc <- sum(placementData$Father_Current_Job == dadJobName[i] & placementData$Secondary_Grade_Percentage >= 70)
+  dadjob_count70hsc <- sum(placementData$Father_Current_Job == dadJobName[i] & placementData$Higher_Secondary_Grade_Percentage >= 70)
   
   dadjob_pass70ssc[i] <- dadjob_count70ssc
   dadjob_pass70hsc[i] <- dadjob_count70hsc
@@ -203,7 +233,7 @@ dadjob_pass70hsc_data <- data.frame(
   Count <- dadjob_pass70hsc
 )
 
-ggplot(momjob_pass70hsc_data, aes(x = "", y = Count, fill = Father_Current_Job)) +
+ggplot(dadjob_pass70hsc_data, aes(x = "", y = Count, fill = Father_Current_Job)) +
   geom_col(width = 1) +
   coord_polar("y", start = 0) +
   labs(fill = "Count", title = "Students' Higher Secondary School Grade Percentage to Father Current Job") +
@@ -213,11 +243,11 @@ ggplot(momjob_pass70hsc_data, aes(x = "", y = Count, fill = Father_Current_Job))
 
 
 # - Family Support
-famsup_yes_pass70ssc <- sum(placementData$famsup == "yes" & placementData$ssc_p >= 70)
-famsup_no_pass70ssc <- sum(placementData$famsup == "no" & placementData$ssc_p >= 70)
+famsup_yes_pass70ssc <- sum(placementData$Family_Support == "yes" & placementData$Secondary_Grade_Percentage >= 70)
+famsup_no_pass70ssc <- sum(placementData$Family_Support == "no" & placementData$Secondary_Grade_Percentage >= 70)
 
-famsup_yes_pass70hsc <- sum(placementData$famsup == "yes" & placementData$hsc_p >= 70)
-famsup_no_pass70hsc <- sum(placementData$famsup == "no" & placementData$hsc_p >= 70)
+famsup_yes_pass70hsc <- sum(placementData$Family_Support == "yes" & placementData$Higher_Secondary_Grade_Percentage >= 70)
+famsup_no_pass70hsc <- sum(placementData$Family_Support == "no" & placementData$Higher_Secondary_Grade_Percentage >= 70)
 
 famsup_pass70ssc <- data.frame(
   Status <- c("Family Support", "Without Family Support"),
@@ -246,11 +276,11 @@ ggplot(famsup_pass70hsc, aes(x = "", y = Count, fill = Status)) +
 
 
 # - Paid class
-paid_yes_pass70ssc <- sum(placementData$paid == "yes" & placementData$ssc_p >= 70)
-paid_no_pass70ssc <- sum(placementData$paid == "no" & placementData$ssc_p >= 70)
+paid_yes_pass70ssc <- sum(placementData$Paid_Classes == "yes" & placementData$Secondary_Grade_Percentage >= 70)
+paid_no_pass70ssc <- sum(placementData$Paid_Classes == "no" & placementData$Secondary_Grade_Percentage >= 70)
 
-paid_yes_pass70hsc <- sum(placementData$paid == "yes" & placementData$hsc_p >= 70)
-paid_no_pass70hsc <- sum(placementData$paid == "no" & placementData$hsc_p >= 70)
+paid_yes_pass70hsc <- sum(placementData$Paid_Classes == "yes" & placementData$Higher_Secondary_Grade_Percentage >= 70)
+paid_no_pass70hsc <- sum(placementData$Paid_Classes == "no" & placementData$Higher_Secondary_Grade_Percentage >= 70)
 
 paid_pass70ssc <- data.frame(
   Status <- c("Paid Classes", "Without Paid Classes"),
@@ -279,11 +309,11 @@ ggplot(paid_pass70hsc, aes(x = "", y = Count, fill = Status)) +
 
 
 # - Curricular activities
-activities_yes_pass70ssc <- sum(placementData$activities == "yes" & placementData$ssc_p >= 70)
-activities_no_pass70ssc <- sum(placementData$activities == "no" & placementData$ssc_p >= 70)
+activities_yes_pass70ssc <- sum(placementData$Curricular_Activities == "yes" & placementData$Secondary_Grade_Percentage >= 70)
+activities_no_pass70ssc <- sum(placementData$Curricular_Activities == "no" & placementData$Secondary_Grade_Percentage >= 70)
 
-activities_yes_pass70hsc <- sum(placementData$activities == "yes" & placementData$hsc_p >= 70)
-activities_no_pass70hsc <- sum(placementData$activities == "no" & placementData$hsc_p >= 70)
+activities_yes_pass70hsc <- sum(placementData$Curricular_Activities == "yes" & placementData$Higher_Secondary_Grade_Percentage >= 70)
+activities_no_pass70hsc <- sum(placementData$Curricular_Activities == "no" & placementData$Higher_Secondary_Grade_Percentage >= 70)
 
 activities_pass70ssc <- data.frame(
   Status <- c("Curricular Activities", "Without Curricular Activities"),
@@ -312,11 +342,11 @@ ggplot(activities_pass70hsc, aes(x = "", y = Count, fill = Status)) +
 
 
 # - Internet Access
-internet_yes_pass70ssc <- sum(placementData$internet == "yes" & placementData$ssc_p >= 70)
-internet_no_pass70ssc <- sum(placementData$internet == "no" & placementData$ssc_p >= 70)
+internet_yes_pass70ssc <- sum(placementData$Internet_Usage == "yes" & placementData$Secondary_Grade_Percentage >= 70)
+internet_no_pass70ssc <- sum(placementData$Internet_Usage == "no" & placementData$Secondary_Grade_Percentage >= 70)
 
-internet_yes_pass70hsc <- sum(placementData$internet == "yes" & placementData$hsc_p >= 70)
-internet_no_pass70hsc <- sum(placementData$internet == "no" & placementData$hsc_p >= 70)
+internet_yes_pass70hsc <- sum(placementData$Internet_Usage == "yes" & placementData$Higher_Secondary_Grade_Percentage >= 70)
+internet_no_pass70hsc <- sum(placementData$Internet_Usage == "no" & placementData$Higher_Secondary_Grade_Percentage >= 70)
 
 internet_pass70ssc <- data.frame(
   Status <- c("Internet Access", "Without Internet Access"),
@@ -345,7 +375,7 @@ ggplot(internet_pass70hsc, aes(x = "", y = Count, fill = Status)) +
 
 
 # - Secondary education board
-secondEduBoard <- table(placementData$ssc_b)
+secondEduBoard <- table(placementData$Secondary_Education_Board)
 
 secondEduBoardName <- as.vector(names(secondEduBoard))
 
@@ -354,8 +384,8 @@ secondEduBoard_pass70ssc <- vector("numeric", length(secondEduBoardName))
 secondEduBoard_pass70hsc <- vector("numeric", length(secondEduBoardName))
 
 for(i in 1:length(secondEduBoardName)) {
-  secondEduBoard_count70ssc <- sum(placementData$ssc_b == secondEduBoardName[i] & placementData$ssc_p >= 70)
-  secondEduBoard_count70hsc <- sum(placementData$ssc_b == secondEduBoardName[i] & placementData$hsc_p >= 70)
+  secondEduBoard_count70ssc <- sum(placementData$Secondary_Education_Board == secondEduBoardName[i] & placementData$Secondary_Grade_Percentage >= 70)
+  secondEduBoard_count70hsc <- sum(placementData$Secondary_Education_Board == secondEduBoardName[i] & placementData$Higher_Secondary_Grade_Percentage >= 70)
   
   secondEduBoard_pass70ssc[i] <- secondEduBoard_count70ssc
   secondEduBoard_pass70hsc[i] <- secondEduBoard_count70hsc
@@ -388,7 +418,7 @@ ggplot(secondEduBoard_pass70hsc_data, aes(x = "", y = Count, fill = Secondary_Ed
 
 
 # - Higher secondary education board
-higherSecondEduBoard <- table(placementData$hsc_b)
+higherSecondEduBoard <- table(placementData$Higher_Secondary_Education_Board)
 
 higherSecondEduBoardName <- as.vector(names(higherSecondEduBoard))
 
@@ -397,8 +427,8 @@ higherSecondEduBoard_pass70ssc <- vector("numeric", length(higherSecondEduBoardN
 higherSecondEduBoard_pass70hsc <- vector("numeric", length(higherSecondEduBoardName))
 
 for(i in 1:length(higherSecondEduBoardName)) {
-  higherSecondEduBoard_count70ssc <- sum(placementData$hsc_b == secondEduBoardName[i] & placementData$ssc_p >= 70)
-  higherSecondEduBoard_count70hsc <- sum(placementData$hsc_b == secondEduBoardName[i] & placementData$hsc_p >= 70)
+  higherSecondEduBoard_count70ssc <- sum(placementData$Higher_Secondary_Education_Board == secondEduBoardName[i] & placementData$Secondary_Grade_Percentage >= 70)
+  higherSecondEduBoard_count70hsc <- sum(placementData$Higher_Secondary_Education_Board == secondEduBoardName[i] & placementData$Higher_Secondary_Grade_Percentage >= 70)
   
   higherSecondEduBoard_pass70ssc[i] <- higherSecondEduBoard_count70ssc
   higherSecondEduBoard_pass70hsc[i] <- higherSecondEduBoard_count70hsc
